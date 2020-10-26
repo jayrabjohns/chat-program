@@ -1,12 +1,48 @@
 ﻿<Window x:Class="Chat_Program.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Chat_Program"
-        mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:Chat_Program"
+		mc:Ignorable="d"
+		Title="MainWindow" Height="450" Width="800">
+    
+	<Grid Margin="10" 
+          HorizontalAlignment="Left" 
+          VerticalAlignment="Top" 
+          Width="250" 
+          Height="250">
         
-    </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="100"></ColumnDefinition>
+            <ColumnDefinition Width="50"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock
+            >IP</TextBlock>
+
+        <TextBlock Grid.Column="1"
+                   TextAlignment="Left"
+                   >Port</TextBlock>
+
+        <TextBox Grid.Row="1"
+                 >127.0.0.1</TextBox>
+
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 >5000</TextBox>
+        
+        <Button Grid.Row="2" 
+                Grid.Column="1"
+                Click="Button_Click"
+                >Connect</Button>
+	</Grid>
 </Window>
