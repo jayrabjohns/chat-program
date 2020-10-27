@@ -22,47 +22,83 @@ namespace Chat_Program
 	/// </summary>
 	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		private IPAddress _ipAddress;
-		public IPAddress IPAddress 
+		private IPAddress _hostIP = null;
+		public IPAddress HostIP
 		{
-			get => _ipAddress;
+			get
+			{
+				if (_hostIP == null)
+				{
+					string hostName = Dns.GetHostName();
+					string ipString = Dns.GetHostEntry(hostName).AddressList[0].ToString();
+					_hostIP = IPAddress.Parse(ipString);
+				}
+
+				return _hostIP;
+			}
+		}
+
+		private int _hostPort = 5000;
+		public int HostPort
+		{
+			get => _hostPort;
 			set
 			{
-				if (!_ipAddress.Equals(value))
+				if (_hostPort != value)
 				{
-					_ipAddress = value;
-					RaisePropertyChanged("IPAddress");
+					_hostPort = value;
+					OnPropertyChanged("HostPort");
 				}
 			}
 		}
 
-		private int _port;
-		public int Port
+		public string test
 		{
-			get => _port;
+			get => HostPort.ToString();
+			set { }
+		}
+
+		private IPAddress _connecitonIP;
+		public IPAddress ConnectionIP 
+		{
+			get => _connecitonIP;
 			set
 			{
-				if (_port != value)
+				if (!_connecitonIP.Equals(value))
 				{
-					_port = value;
-					RaisePropertyChanged("Port");
+					_connecitonIP = value;
+					OnPropertyChanged("ConnectionIP");
 				}
 			}
 		}
 
-		public MainWindow()
+		private int _connectionPort = 5000;
+		public int ConnectionPort
 		{
-			InitializeComponent();
+			get => _connectionPort;
+			set
+			{
+				if (_connectionPort != value)
+				{
+					_connectionPort = value;
+					OnPropertyChanged("ConnectionPort");
+				}
+			}
 		}
 
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public void RaisePropertyChanged(string propertyName)
+		public void OnPropertyChanged(string propertyName)
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 		#endregion
+
+		public MainWindow()
+		{
+			InitializeComponent();
+		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
