@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
@@ -30,8 +31,8 @@ namespace Chat_Program
 				if (_hostIP == null)
 				{
 					string hostName = Dns.GetHostName();
-					string ipString = Dns.GetHostEntry(hostName).AddressList[0].ToString();
-					_hostIP = IPAddress.Parse(ipString);
+					IPAddress[] addresses = Dns.GetHostEntry(hostName).AddressList;
+					_hostIP = addresses[1];
 				}
 
 				return _hostIP;
@@ -52,13 +53,7 @@ namespace Chat_Program
 			}
 		}
 
-		public string test
-		{
-			get => HostPort.ToString();
-			set { }
-		}
-
-		private IPAddress _connecitonIP;
+		private IPAddress _connecitonIP = IPAddress.Parse("127.0.0.1");
 		public IPAddress ConnectionIP 
 		{
 			get => _connecitonIP;
@@ -68,6 +63,18 @@ namespace Chat_Program
 				{
 					_connecitonIP = value;
 					OnPropertyChanged("ConnectionIP");
+				}
+			}
+		}
+
+		public string ConnectionIPStr
+		{
+			get => ConnectionIP.ToString();
+			set
+			{
+				if (IPAddress.TryParse(value, out IPAddress ipAddress))
+				{
+					ConnectionIP = ipAddress;
 				}
 			}
 		}
@@ -86,6 +93,22 @@ namespace Chat_Program
 			}
 		}
 
+		private string _sendBoxText = string.Empty;
+		public string SendBoxText
+		{
+			get => _sendBoxText;
+			set
+			{
+				if (_sendBoxText != value)
+				{
+					_sendBoxText = value;
+					OnPropertyChanged("SendBoxText");
+				}
+			}
+		}
+
+		public ObservableCollection<string> ReceiveBoxText { get; } = new ObservableCollection<string>();
+
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,14 +118,21 @@ namespace Chat_Program
 		}
 		#endregion
 
+		
+		private ChatClient ChatClient { get; }
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			ChatClient = new ChatClient(1024);
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-
+			if (ConnectionIP != null)
+			{
+				ChatClient.Connect(ConnectionIP, ConnectionPort);
+			}
 		}
 	}
 }
