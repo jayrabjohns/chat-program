@@ -21,12 +21,14 @@ namespace Chat_Program
 
 		private Action OnCouldntConnect { get; }
 		private Action OnUnexpectedDisconnect { get; }
+		private Action OnCouldntSendResponse { get; }
 
-		public ChatClient(int maxResponseBytes = 1024, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null)
+		public ChatClient(int maxResponseBytes = 1024, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
 			MaxResponseBytes = maxResponseBytes;
 			OnCouldntConnect = onCouldntConnect;
 			OnUnexpectedDisconnect = onUnexpectedDisconnect;
+			OnCouldntSendResponse = onCouldntSendResponse;
 		}
 
 		public void Connect(IPAddress ipAddress, int port)
@@ -73,6 +75,10 @@ namespace Chat_Program
 			if (Connected)
 			{	
 				TcpClient.GetStream().Write(buffer, 0, buffer.Length);
+			}
+			else
+			{
+				OnCouldntSendResponse?.Invoke();
 			}
 		}
 
