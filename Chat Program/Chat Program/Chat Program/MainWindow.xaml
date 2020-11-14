@@ -27,7 +27,7 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid HorizontalAlignment="Left" 
 		              VerticalAlignment="Top" 
 		              Width="150" 
@@ -111,13 +111,26 @@
                     <RowDefinition Height="20"></RowDefinition>
                 </Grid.RowDefinitions>
 
-                <TextBox Name="ReceiveTextBox"
+                <!--<TextBox Name="ReceiveTextBox"
                          Grid.Row ="0"
                          VerticalAlignment="Stretch"
                          TextWrapping="Wrap"
                          AcceptsReturn="True"
                          IsReadOnly="True"
-                         Text="{Binding ReceiveTextBoxText, Mode=OneWay}"></TextBox>
+                         Text="{Binding Path=ReceiveTextBoxTextList.Value, Mode=OneWay}"></TextBox>-->
+
+                <StackPanel>
+                    <GroupBox BorderBrush="Aqua">
+                        <ItemsControl ItemsSource="{Binding ReceiveTextBoxTextList}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBox IsReadOnly="True"
+                                     Text="{Binding Value}"></TextBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </GroupBox>
+                </StackPanel>
 
                 <TextBox Name="SendTextBox"
                          Grid.Row="1"
@@ -127,5 +140,4 @@
             </Grid>
         </Grid>
     </Grid>
-
 </Window>

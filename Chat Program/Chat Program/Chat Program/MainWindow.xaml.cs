@@ -107,7 +107,12 @@ namespace Chat_Program
 			}
 		}
 
-		public ObservableCollection<string> ReceiveTextBoxText { get; } = new ObservableCollection<string>();
+		public class StringObject
+		{
+			public string Value { get; set; }
+		}
+		private ObservableCollection<StringObject> ReceiveTextBoxTextList { get; } = new ObservableCollection<StringObject>() { new StringObject() { Value = "test" } };
+		public string ReceiveTextBoxTextStr { get => string.Join(Environment.NewLine, ReceiveTextBoxTextList); }
 
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -124,7 +129,7 @@ namespace Chat_Program
 		{
 			InitializeComponent();
 
-			ChatClient = new ChatClient(1024);
+			ChatClient = new ChatClient(null, 1024);
 		}
 
 		private void ConnectButton_Click(object sender, RoutedEventArgs e)
@@ -151,12 +156,15 @@ namespace Chat_Program
 
 			if (minLengthAdded && sender is TextBox textBox)
 			{
-				// Updating value of SendTextBoxText to what's currently in the text box
+				// Force updating value of SendTextBoxText
 				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 
 				if (SendTextBoxText.EndsWith(Environment.NewLine))
 				{
-					ChatClient.SendMessage(SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length));
+					string message = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
+
+					ChatClient.SendMessage(message);
+					ReceiveTextBoxTextList.Add(new StringObject() { Value = message });
 					SendTextBoxText = string.Empty;
 				}
 			}

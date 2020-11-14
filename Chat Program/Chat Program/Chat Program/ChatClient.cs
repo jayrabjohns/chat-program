@@ -19,13 +19,16 @@ namespace Chat_Program
 		private TcpClient TcpClient { get; } = new TcpClient();
 		private int MaxResponseBytes { get; }
 
+		private Action OnReceiveMessage { get; }
 		private Action OnCouldntConnect { get; }
 		private Action OnUnexpectedDisconnect { get; }
 		private Action OnCouldntSendResponse { get; }
 
-		public ChatClient(int maxResponseBytes = 1024, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
+		public ChatClient(Action onReceiveMessage = null, int maxResponseBytes = 1024, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
 			MaxResponseBytes = maxResponseBytes;
+
+			OnReceiveMessage = onReceiveMessage;
 			OnCouldntConnect = onCouldntConnect;
 			OnUnexpectedDisconnect = onUnexpectedDisconnect;
 			OnCouldntSendResponse = onCouldntSendResponse;
