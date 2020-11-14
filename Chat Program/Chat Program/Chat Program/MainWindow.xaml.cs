@@ -134,6 +134,31 @@ namespace Chat_Program
 				ChatClient.Connect(RemoteIP, RemotePort);
 			}
 		}
+
+		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			bool minLengthAdded = false;
+
+			// Checking if the changes could plausibly contain a newline
+			foreach (var change in e.Changes)
+			{
+				if (change.AddedLength >= Environment.NewLine.Length)
+				{
+					minLengthAdded = true;
+					break;
+				}
+			}
+
+			if (minLengthAdded && sender is TextBox textBox)
+			{
+				// Updating value of SendTextBoxText to what's currently in the text box
+				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+
+				if (SendTextBoxText.EndsWith(Environment.NewLine))
+				{
+					ChatClient.SendMessage(SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length));
+					SendTextBoxText = string.Empty;
+				}
 			}
 		}
 	}
