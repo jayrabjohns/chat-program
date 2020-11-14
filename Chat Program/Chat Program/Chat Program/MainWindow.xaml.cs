@@ -53,61 +53,61 @@ namespace Chat_Program
 			}
 		}
 
-		private IPAddress _connecitonIP = IPAddress.Parse("127.0.0.1");
-		public IPAddress ConnectionIP 
+		private IPAddress _remoteIP = IPAddress.Parse("127.0.0.1");
+		public IPAddress RemoteIP 
 		{
-			get => _connecitonIP;
+			get => _remoteIP;
 			set
 			{
-				if (!_connecitonIP.Equals(value))
+				if (!_remoteIP.Equals(value))
 				{
-					_connecitonIP = value;
-					OnPropertyChanged("ConnectionIP");
+					_remoteIP = value;
+					OnPropertyChanged("RemoteIP");
 				}
 			}
 		}
 
-		public string ConnectionIPStr
+		public string RemoteIPStr
 		{
-			get => ConnectionIP.ToString();
+			get => RemoteIP.ToString();
 			set
 			{
 				if (IPAddress.TryParse(value, out IPAddress ipAddress))
 				{
-					ConnectionIP = ipAddress;
+					RemoteIP = ipAddress;
 				}
 			}
 		}
 
-		private int _connectionPort = 5000;
-		public int ConnectionPort
+		private int _remotePort = 5000;
+		public int RemotePort
 		{
-			get => _connectionPort;
+			get => _remotePort;
 			set
 			{
-				if (_connectionPort != value)
+				if (_remotePort != value)
 				{
-					_connectionPort = value;
-					OnPropertyChanged("ConnectionPort");
+					_remotePort = value;
+					OnPropertyChanged("RemotePort");
 				}
 			}
 		}
 
-		private string _sendBoxText = string.Empty;
-		public string SendBoxText
+		private string _sendTextBoxText = string.Empty;
+		public string SendTextBoxText
 		{
-			get => _sendBoxText;
+			get => _sendTextBoxText;
 			set
 			{
-				if (_sendBoxText != value)
+				if (_sendTextBoxText != value)
 				{
-					_sendBoxText = value;
-					OnPropertyChanged("SendBoxText");
+					_sendTextBoxText = value;
+					OnPropertyChanged("SendTextBoxText");
 				}
 			}
 		}
 
-		public ObservableCollection<string> ReceiveBoxText { get; } = new ObservableCollection<string>();
+		public ObservableCollection<string> ReceiveTextBoxText { get; } = new ObservableCollection<string>();
 
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -127,11 +127,13 @@ namespace Chat_Program
 			ChatClient = new ChatClient(1024);
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void ConnectButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (ConnectionIP != null)
+			if (RemoteIP != null)
 			{
-				ChatClient.Connect(ConnectionIP, ConnectionPort);
+				ChatClient.Connect(RemoteIP, RemotePort);
+			}
+		}
 			}
 		}
 	}
