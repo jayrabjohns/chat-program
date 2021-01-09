@@ -89,5 +89,20 @@
                     </Border>
                 </Border>
                 <!--#endregion-->
+
+                <!--Starred Msgs-->
+                <Grid Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="147" FontSize="15" FontWeight="SemiBold" Foreground="#B7B5B8" 
+                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+
+                    <Image Grid.Column="1" Source="/assets/badge.png" Margin="0,0,-5,0" Width="32" Stretch="Uniform"/>
+                </Grid>
+                <!--#endregion-->
+            </Grid>
     </Grid>
 </Window>
