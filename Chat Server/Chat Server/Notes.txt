@@ -1,0 +1,6 @@
+﻿Client -login request> Server
+Server -ask username & pw> Client
+Client -send username & pw> Server
+Server -validate login details
+		if valid, create new session id for client
+		if not, re-ask
