@@ -55,6 +55,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ViewModel.cs" />
+    <Page Include="Custom Controls\MenuListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Custom Controls\ProfileButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -68,6 +73,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ChatClient.cs" />
+    <Compile Include="Custom Controls\MenuListControl.xaml.cs">
+      <DependentUpon>MenuListControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Custom Controls\ProfileButton.xaml.cs">
       <DependentUpon>ProfileButton.xaml</DependentUpon>
     </Compile>

@@ -34,6 +34,7 @@
             <!-- #region Profile Button-->
             <Custom_Control:ProfileButton Width="50"/>
             <!-- #endregion Profile Button-->
+            <Custom_Control:MenuListControl Grid.Row="1"/>
         </Grid>
         
     </Grid>

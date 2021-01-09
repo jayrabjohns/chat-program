@@ -21,7 +21,7 @@
 
         <!--#region Indicator Style-->
         <Style x:Key="IndicatorStyle" TargetType="{x:Type Border}">
-            <Setter Property="Background" Value="f54a4a"/>
+            <Setter Property="Background" Value="#f54a4a"/>
             <Setter Property="Visibility" Value="Hidden"/>
             <Setter Property="Height" Value="{Binding Height, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Border}}"/>
             <Setter Property="Width" Value="4"/>
@@ -31,11 +31,8 @@
             <!--Dropshadow effect for indicator-->
             <Setter Property="Effect" Value="{StaticResource DropShadowInd}"/>
 
-            <!--Making indicator visible only on mouse hover over or click-->
+            <!--Making indicator visible only on click-->
             <Style.Triggers>
-                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
-                    <Setter Property="Visibility" Value="Visible"/>
-                </DataTrigger>
                 <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListBoxItem}}" Value="True">
                     <Setter Property="Visibility" Value="Visible"/>
                 </DataTrigger>
@@ -44,13 +41,13 @@
         <!--#endregion-->
         
         <!--#region Path Style-->
-        <Style TargetType="{x:Type Path}">
+        <Style x:Key="PathStyle" TargetType="{x:Type Path}">
             <Setter Property="Fill" Value="#686D83"/>
             <Setter Property="Width" Value="26"/>
             <Setter Property="Stretch" Value="Uniform"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
 
-            <!--Making style visible only on mouse hover over or click-->
+            <!--Highlighting on mouse hover or click-->
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True">
                     <Setter Property="Fill" Value="White"/>
@@ -65,14 +62,17 @@
         <!--#region Styling Listbox Item-->
         <Style TargetType="{x:Type ListBoxItem}">
             <Setter Property="Height" Value="74"/>
+            
+            <!--Setting selected menu item on startup-->
             <Setter Property="IsSelected" Value="{Binding IsItemSelected}"/>
+            
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                        <Border x:Name="border" BorderThickness="0" SnapsToDevicePixels="True">
-                            <Grid Margin="0">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+                            <Grid Margin="-4,0,0,0">
                                 <!--#region Left Side Indicator for button-->
                                 <Border Style="{StaticResource IndicatorStyle}"/>
                                 <!--#endregion-->
@@ -96,5 +96,6 @@
         <!--#endregion-->
     </UserControl.Resources>
     
-    <ListBox Style="{StaticResource ChatListBox}"/>
+    <!--Populating Menu-->
+    <ListBox Style="{StaticResource ChatListBox}" ItemsSource="{Binding ItemList}"/>
 </UserControl>
