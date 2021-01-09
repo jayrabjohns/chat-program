@@ -16,7 +16,7 @@
             <Setter Property="Focusable" Value="False"/>
         </Style>
 
-        <!--Shadow effect for indicator-->
+        <!--Dropshadow effect for indicator-->
         <DropShadowEffect x:Key="DropShadowInd" BlurRadius="10" ShadowDepth="3" Direction="360" Color="#f54a4a"/>
 
         <!--#region Indicator Style-->

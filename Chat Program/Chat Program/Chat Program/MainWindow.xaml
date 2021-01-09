@@ -21,7 +21,8 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="310"/>
         </Grid.ColumnDefinitions>
-        
+
+        <!--#region Side Bar-->
         <Grid Grid.Column="0"
               Background="#2a2e4d">
 
@@ -29,13 +30,64 @@
                 <RowDefinition Height="100"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <!-- #region Profile Button-->
-            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg"/>
-            <!-- #endregion Profile Button-->
 
+            <!--Profile Button-->
+            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg"/>
+
+            <!--Menu List-->
             <Custom_Control:MenuListControl Grid.Row="1"/>
+
         </Grid>
-        
+        <!--#endregion-->
+
+        <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,30,0,0">
+            <Grid Margin="30,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="90"/>
+                </Grid.ColumnDefinitions>
+
+                <!--#region Search Bar-->
+                <Border Grid.Column="0" Background="Transparent" Height="Auto" Visibility="{Binding Visibility}">
+
+                    <!--Creating curved border-->
+                    <Border Background="#F8F6F7" Height="48" CornerRadius="25" HorizontalAlignment="Stretch">
+                        <Grid Height="Auto">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="60"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!--Search Icon-->
+                            <Image Source="assets/search.png" Width="25" Stretch="Uniform"/>
+
+                            <!--Search Query-->
+                            <TextBox Grid.Column="1" x:Name="searchQuery" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                     VerticalContentAlignment="Center" TextAlignment="Left" BorderThickness="0" Background="Transparent"
+                                     Margin="0,0,15,0"/>
+
+                            <!--Watermark text-->
+                            <TextBlock Grid.Column="1" Text="Enter to search..." FontWeight="SemiBold" FontSize="16"
+                                       HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" 
+                                       Foreground="#B7B5B8" IsHitTestVisible="False" Margin="1,0,0,0">
+
+                                <!--Making watermark only display when searchQuery is empty-->
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=searchQuery}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
+                </Border>
+                <!--#endregion-->
     </Grid>
 </Window>
