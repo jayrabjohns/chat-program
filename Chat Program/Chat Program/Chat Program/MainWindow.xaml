@@ -6,7 +6,6 @@
 		xmlns:local="clr-namespace:Chat_Program" xmlns:Custom_Control="clr-namespace:Chat_Program.Custom_Controls"
         mc:Ignorable="d"
         x:Name="_mainWindow"
-        d:DataContext="{d:DesignInstance Type=local:MainWindow}"
 		
 		Title="Chat Program" 
 		Height="800"
@@ -32,8 +31,9 @@
             </Grid.RowDefinitions>
             
             <!-- #region Profile Button-->
-            <Custom_Control:ProfileButton Width="50"/>
+            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg"/>
             <!-- #endregion Profile Button-->
+
             <Custom_Control:MenuListControl Grid.Row="1"/>
         </Grid>
         

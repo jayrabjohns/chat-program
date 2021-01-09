@@ -114,5 +114,8 @@
   <ItemGroup>
     <Resource Include="Assets\noimageerror.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\profile1.jpg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

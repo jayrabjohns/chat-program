@@ -34,7 +34,7 @@
                         <!--Profile Pic-->
                         <Ellipse>
                             <Ellipse.Fill>
-                                <ImageBrush Stretch="Uniform" 
+                                <ImageBrush Stretch="UniformToFill" 
                                         ImageSource="{Binding ElementName=_profileButton, Path=ProfileImageSource, FallbackValue={StaticResource DefaultImage}, TargetNullValue={StaticResource DefaultImage}}"/>
                             </Ellipse.Fill>
                         </Ellipse>
