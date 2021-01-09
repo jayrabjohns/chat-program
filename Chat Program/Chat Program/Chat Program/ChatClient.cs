@@ -58,16 +58,16 @@ namespace Chat_Program
 			}
 		}
 
-		public void SendMessage(string message)
+		public void SendString(string str)
 		{
-			byte[] buffer = Encoding.UTF8.GetBytes(message);
+			byte[] buffer = Encoding.UTF8.GetBytes(str);
 			SendResponse(buffer);
 		}
 
 		/// <summary>
-		/// Sends a message to the server.
+		/// Sends a response to the server.
 		/// </summary>
-		/// <param name="buffer">Message to send, encoded in UTF8.</param>
+		/// <param name="buffer">Byte array response to send</param>
 		public void SendResponse(byte[] buffer)
 		{
 			if (buffer.Length > MaxResponseBytes)

@@ -13,6 +13,11 @@
 		MinHeight="400"
         DataContext="{Binding RelativeSource={RelativeSource Self}}">
 
+    <Window.Resources>
+        <CollectionViewSource Source="{Binding Source={x:Static Application.Current}, Path=ReceiveTextBoxTextList}"
+                              x:Key="Messages"/>
+    </Window.Resources>
+    
     <Grid HorizontalAlignment="Left"
 		  Width="450">
 
@@ -119,18 +124,46 @@
                          IsReadOnly="True"
                          Text="{Binding Path=ReceiveTextBoxTextList.Value, Mode=OneWay}"></TextBox>-->
 
-                <StackPanel>
-                    <GroupBox BorderBrush="Aqua">
-                        <ItemsControl ItemsSource="{Binding ReceiveTextBoxTextList}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBox IsReadOnly="True"
-                                     Text="{Binding Value}"></TextBox>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </GroupBox>
-                </StackPanel>
+                <!--#region DataTemplate ListSashDim-->
+
+                <!--<ListBox Width="430"
+                         ItemsSource="{Binding Source={StaticResource Messages}, Mode=OneWay}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel>
+                                <TextBox IsReadOnly="True"
+                                         Text="{Binding Contents}"></TextBox>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>-->
+
+                <ListView ItemsSource="{Binding Path=ReceiveTextBoxTextList, Mode=OneWay}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="x:Type models:Message">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBox Width="200"
+                                         Text="{Binding Contents}"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+
+                <!--<ItemsControl Name="ReceivedMessages"
+                              Grid.Row="0"
+                              ItemsSource="{Binding ReceiveTextBoxTextList, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                              Padding="8">
+                    
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Center">
+                                
+                            </StackPanel>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>-->
 
                 <TextBox Name="SendTextBox"
                          Grid.Row="1"

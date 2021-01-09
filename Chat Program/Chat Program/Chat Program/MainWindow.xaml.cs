@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Chat_Program
 {
@@ -107,11 +96,7 @@ namespace Chat_Program
 			}
 		}
 
-		public class StringObject
-		{
-			public string Value { get; set; }
-		}
-		private ObservableCollection<StringObject> ReceiveTextBoxTextList { get; } = new ObservableCollection<StringObject>() { new StringObject() { Value = "test" } };
+		private ObservableCollection<Message> ReceiveTextBoxTextList { get; } = new ObservableCollection<Message>() { new Message() { Contents = "test" } };
 		public string ReceiveTextBoxTextStr { get => string.Join(Environment.NewLine, ReceiveTextBoxTextList); }
 
 		#region INotifyPropertyChanged
@@ -159,12 +144,13 @@ namespace Chat_Program
 				// Force updating value of SendTextBoxText
 				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 
+				// Only send message if enter was pressed
 				if (SendTextBoxText.EndsWith(Environment.NewLine))
 				{
 					string message = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
 
-					ChatClient.SendMessage(message);
-					ReceiveTextBoxTextList.Add(new StringObject() { Value = message });
+					ChatClient.SendString(message);
+					ReceiveTextBoxTextList.Add(new Message() { Contents = message });
 					SendTextBoxText = string.Empty;
 				}
 			}
