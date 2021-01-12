@@ -11,8 +11,8 @@
 		Title="Chat Program" 
 		Height="800"
 		Width="1400"
-        WindowStyle="None"
-		ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+		ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -362,6 +362,8 @@
         <!--#endregion-->
 
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,30,0,0">
+            
+            <!--#region Search & Starred Msgs-->
             <Grid Margin="30,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -411,7 +413,7 @@
                 </Border>
                 <!--#endregion-->
 
-                <!--Starred Msgs-->
+                <!--#region Starred Msgs-->
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -425,7 +427,8 @@
                 </Grid>
                 <!--#endregion-->
             </Grid>
-
+            <!--#endregion-->
+            
             <!--#region Sort & Add New-->
             <Grid Grid.Row="1" Height="65" Margin="30,0,30,0">
                 <Grid.ColumnDefinitions>
@@ -462,6 +465,10 @@
                 <!--#endregion-->
 
             </Grid>
+            <!--#endregion-->
+            
+            <!--#region Chat List-->
+            <Custom_Control:ChatList/>
             <!--#endregion-->
         </StackPanel>
     </Grid>
