@@ -13,8 +13,21 @@ namespace Chat_Program
 		public bool IsItemSelected { get; set; }
 	}
 
+	public class ChatListItem
+	{
+		public bool IsChatSelected { get; set; }
+		public string ContactProfilePic { get; set; }
+		public string ContactName { get; set; }
+		public string LastMessageTime { get; set; }
+		public string Availability { get; set; }
+		public bool IsRead { get; set; }
+		public string Message { get; set; }
+		public string NewMsgCount { get; set; }
+	}
+
 	class ViewModel
 	{
+		// Menu Items
 		public List<MenuItem> ItemList
 		{
 			get
@@ -64,6 +77,28 @@ namespace Chat_Program
 					}
 				};
 
+			}
+		}
+
+		// Chat list items
+		public List<ChatListItem> ChatListItems 
+		{
+			get
+			{
+				return new List<ChatListItem>
+				{
+					new ChatListItem()
+					{
+						IsChatSelected = false,
+						ContactProfilePic = "/assets/profile1.jpg",
+						ContactName = "Jay Test",
+						LastMessageTime = "10:30",
+						Availability = "Online",
+						IsRead = true,
+						Message = "Hey, this is testing some stuff, ignore.",
+						NewMsgCount = "1"
+					}
+				};
 			}
 		}
 	}
