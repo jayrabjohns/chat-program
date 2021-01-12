@@ -4,18 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Chat_Program.Custom_Controls"
-             mc:Ignorable="d" x:Name="_profileButton" Height="50" Width="150">
+             mc:Ignorable="d" x:Name="_profileButton" Height="50" Width="50">
     
     <UserControl.Resources>
         <BitmapImage x:Key="DefaultImage" UriSource="/assets/noimageerror.png"/>
+
+        <Style x:Key="AvailabilityStyle" TargetType="{x:Type Ellipse}">
+            <Setter Property="StrokeThickness" Value="4"/>
+            <Setter Property="Stroke" Value="{Binding ElementName=_profileButton, Path=StrokeBrush,FallbackValue=White,TargetNullValue=White}"/>
+            <Setter Property="Width" Value="15"/>
+            <Setter Property="Height" Value="15"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Top"/>
+            <Setter Property="Fill" Value="Green"/>
+            
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ElementName=_profileButton, Path=IsOnline, FallbackValue=False, TargetNullValue=False}" Value="False">
+                    <Setter Property="Fill" Value="#B7B5B8"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        
+    <Viewbox Stretch="Fill">
         <Button Grid.Column="0">
             <Button.Style>
                 <Style TargetType="{x:Type Button}">
@@ -40,23 +51,11 @@
                         </Ellipse>
 
                         <!--Availibility Ellipse-->
-                        <Ellipse Fill="Green" StrokeThickness="4" Stroke="White" Width="15" Height="15" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                        <Ellipse Style="{StaticResource AvailabilityStyle}"/>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                 </ControlTemplate>
             </Button.Template>
         </Button>
-
-        <Grid Grid.Column="1" Margin="6,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" Text="{Binding ElementName=_profileButton, Path=UserName, TargetNullValue=username}" Foreground="Black" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-            <TextBlock Grid.Row="1" Text="{Binding ElementName=_profileButton, Path=Availability, TargetNullValue=availability}" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-        </Grid>
-        
-    </Grid>
-
+    </Viewbox>
 </UserControl>

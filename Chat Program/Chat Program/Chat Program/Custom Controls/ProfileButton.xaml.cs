@@ -25,38 +25,37 @@ namespace Chat_Program.Custom_Controls
 			InitializeComponent();
 		}
 
-		public ImageSource ProfileImageSource
-		{
-			get { return (ImageSource)GetValue(ProfileImageSourceProperty); }
-			set { SetValue(ProfileImageSourceProperty, value);  }
-		}
 
-		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty ProfileImageSourceProperty = 
-			DependencyProperty.Register("ProfileImageSource", typeof(ImageSource), typeof(ProfileButton));
+        public SolidColorBrush StrokeBrush
+        {
+            get { return (SolidColorBrush)GetValue(StrokeBrushProperty); }
+            set { SetValue(StrokeBrushProperty, value); }
+        }
 
-
-
-		public string UserName
-		{
-			get { return (string)GetValue(UserNameProperty); }
-			set { SetValue(UserNameProperty, value); }
-		}
-
-		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty UserNameProperty = 
-			DependencyProperty.Register("UserName", typeof(string), typeof(ProfileButton));
+        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StrokeBrushProperty =
+            DependencyProperty.Register("StrokeBrush", typeof(SolidColorBrush), typeof(ProfileButton));
 
 
+        public bool IsOnline
+        {
+            get { return (bool)GetValue(IsOnlineProperty); }
+            set { SetValue(IsOnlineProperty, value); }
+        }
 
-		public string Availability
-		{
-			get { return (string)GetValue(AvailabilityProperty); }
-			set { SetValue(AvailabilityProperty, value); }
-		}
+        // Using a DependencyProperty as the backing store for ImageSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsOnlineProperty =
+            DependencyProperty.Register("IsOnline", typeof(bool), typeof(ProfileButton));
 
-		// Using a DependencyProperty as the backing store for Availability.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty AvailabilityProperty =
-			DependencyProperty.Register("Availability", typeof(string), typeof(ProfileButton));
-	}
+
+        public ImageSource ProfileImageSource
+        {
+            get { return (ImageSource)GetValue(ImageSourceProperty); }
+            set { SetValue(ImageSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ImageSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ImageSourceProperty =
+            DependencyProperty.Register("ProfileImageSource", typeof(ImageSource), typeof(ProfileButton));
+    }
 }

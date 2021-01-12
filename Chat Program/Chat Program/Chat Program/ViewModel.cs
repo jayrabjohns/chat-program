@@ -16,6 +16,7 @@ namespace Chat_Program
 	public class ChatListItem
 	{
 		public bool IsChatSelected { get; set; }
+		public bool IsOnline { get; set; }
 		public string ContactProfilePic { get; set; }
 		public string ContactName { get; set; }
 		public string LastMessageTime { get; set; }
@@ -90,12 +91,13 @@ namespace Chat_Program
 					new ChatListItem()
 					{
 						IsChatSelected = false,
-						ContactProfilePic = "/assets/profile1.jpg",
+						IsOnline = false,
+						ContactProfilePic = "/assets/moss.jpg",
 						ContactName = "Jay Test",
 						LastMessageTime = "10:30",
 						Availability = "Online",
 						IsRead = true,
-						Message = "Hey, this is testing some stuff, ignore.",
+						Message = "Hey, this is testing some stuff, please ignore. TESTING\ntest",
 						NewMsgCount = "1"
 					}
 				};

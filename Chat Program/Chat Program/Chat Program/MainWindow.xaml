@@ -353,7 +353,7 @@
             </Grid.RowDefinitions>
 
             <!--Profile Button-->
-            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg"/>
+            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg" IsOnline="True"/>
 
             <!--Menu List-->
             <Custom_Control:MenuListControl Grid.Row="1"/>

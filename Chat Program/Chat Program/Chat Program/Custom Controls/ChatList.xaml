@@ -81,7 +81,7 @@
                                             </Grid.RowDefinitions>
 
                                             <!--Profile Pic-->
-                                            <local:ProfileButton ProfileImageSource="{Binding ContactProfilePic}"/>
+                                            <local:ProfileButton ProfileImageSource="{Binding ContactProfilePic}" IsOnline="{Binding IsOnline}"/>
 
                                             <!--#region Contact Name & Availability status-->
                                             <Grid Grid.Column="1" Margin="13,0,0,0">
@@ -201,5 +201,4 @@
     </UserControl.Resources>
 
     <ListBox Style="{StaticResource ChatListBoxStyle}" ItemsSource="{Binding ChatListItems}"/>
-
 </UserControl>
