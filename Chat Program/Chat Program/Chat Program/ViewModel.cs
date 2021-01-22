@@ -95,7 +95,7 @@ namespace Chat_Program
 						ContactProfilePic = "/assets/moss.jpg",
 						ContactName = "Jay Test",
 						LastMessageTime = "10:30",
-						Availability = "Online",
+						Availability = "Offline",
 						IsRead = true,
 						Message = "Hey, this is testing some stuff, please ignore. TESTING\ntest",
 						NewMsgCount = "1"
