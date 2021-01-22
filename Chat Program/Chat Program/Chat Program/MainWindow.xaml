@@ -343,7 +343,7 @@
             <ColumnDefinition Width="310"/>
         </Grid.ColumnDefinitions>
 
-        <!--#region Side Bar-->
+        <!--#region Left Side Bar-->
         <Grid Grid.Column="0"
               Background="#2a2e4d">
 
@@ -361,8 +361,9 @@
         </Grid>
         <!--#endregion-->
 
+        <!--#region Middle Left-->
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,30,0,0">
-            
+
             <!--#region Search & Starred Msgs-->
             <Grid Margin="30,0,0,0">
                 <Grid.ColumnDefinitions>
@@ -428,7 +429,7 @@
                 <!--#endregion-->
             </Grid>
             <!--#endregion-->
-            
+
             <!--#region Sort & Add New-->
             <Grid Grid.Row="1" Height="65" Margin="30,0,30,0">
                 <Grid.ColumnDefinitions>
@@ -466,10 +467,62 @@
 
             </Grid>
             <!--#endregion-->
-            
+
             <!--#region Chat List-->
             <Custom_Control:ChatList/>
             <!--#endregion-->
         </StackPanel>
+        <!--#endregion-->
+
+        <!--#region Chat Screen-->
+        <Border Grid.Column="2" BorderThickness=".5,0,.5,0" BorderBrush="#B7B5B8">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="80"/>
+                </Grid.RowDefinitions>
+                
+                <!--#region Header-->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="160"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!--Profile Pic-->
+                    <Custom_Control:ProfileButton Grid.Column="0" HorizontalAlignment="Left" Margin="30,0" ProfileImageSource="/assets/profile1.jpg" IsOnline="False"/>
+                    
+                    <!--Contact Name-->
+                    <TextBlock Grid.Column="1" VerticalAlignment="Center">
+                        <Run Text="Jay Test" FontWeight="Bold" FontSize="17"/>
+                        <LineBreak/>
+                        <Run Text="Offline" FontSize="14" Foreground="#B7B5B8"/>
+                        <Run Text=" • " FontWeight="ExtraBold" FontSize="19" Foreground="#B7B5B8"/>
+                        <Run Text="Last seen 3 hours ago" FontSize="14" Foreground="#B7B5B8"/>
+                    </TextBlock>
+                    
+                    <!--Call & video call icons-->
+                    <Grid Grid.Column="3" VerticalAlignment="Top">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <UniformGrid Columns="3" Margin="0,30,0,0" VerticalAlignment="Top">
+                            <Image Height="20" Stretch="Uniform" Source="/assets/phone.png"/>
+                            <Image Height="20" Stretch="Uniform" Source="/assets/videocall.png"/>
+                            <Image Height="20" Stretch="Uniform" Source="/assets/more.png"/>
+                        </UniformGrid>
+                    </Grid>
+                </Grid>
+                <!--#endregion-->
+                
+                <!--#region Conversation Screen-->
+                
+                <!--#endregion-->
+            </Grid>
+        </Border>
+        <!--#endregion-->
+
     </Grid>
 </Window>

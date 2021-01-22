@@ -140,5 +140,10 @@
   <ItemGroup>
     <Resource Include="Assets\moss.JPG" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\more.png" />
+    <Resource Include="Assets\phone.png" />
+    <Resource Include="Assets\videocall.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
