@@ -375,7 +375,7 @@
 
         <!--#region Left Side Bar-->
         <Grid Grid.Column="0"
-              Background="#2a2e4d">
+              Background="#2A2E4D">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
@@ -385,7 +385,8 @@
             <!--Profile Button-->
             <Custom_Control:ProfileButton ProfileImageSource="\assets\profile1.jpg"
                                           Width="50" 
-                                          IsOnline="True"/>
+                                          IsOnline="True"
+                                          BorderBrush="#2A2E4D"/>
 
             <!--Menu List-->
             <Custom_Control:MenuListControl Grid.Row="1"/>
