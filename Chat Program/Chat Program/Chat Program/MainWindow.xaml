@@ -353,7 +353,9 @@
             </Grid.RowDefinitions>
 
             <!--Profile Button-->
-            <Custom_Control:ProfileButton Width="50" ProfileImageSource="\assets\profile1.jpg" IsOnline="True"/>
+            <Custom_Control:ProfileButton ProfileImageSource="\assets\profile1.jpg"
+                                          Width="50" 
+                                          IsOnline="True"/>
 
             <!--Menu List-->
             <Custom_Control:MenuListControl Grid.Row="1"/>
@@ -383,19 +385,35 @@
                             </Grid.ColumnDefinitions>
 
                             <!--Search Icon-->
-                            <Image Source="assets/search.png" Width="25" Stretch="Uniform"/>
+                            <Image Source="assets/search.png" 
+                                   Width="25" 
+                                   Stretch="Uniform"/>
 
                             <!--Search Query-->
-                            <TextBox Grid.Column="1" x:Name="searchQuery" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                                     VerticalContentAlignment="Center" TextAlignment="Left" BorderThickness="0" Background="Transparent"
+                            <TextBox Grid.Column="1"
+                                     x:Name="searchQuery"
+                                     FontSize="16"
+                                     HorizontalAlignment="Stretch" 
+                                     VerticalAlignment="Stretch" 
+                                     VerticalContentAlignment="Center"
+                                     TextAlignment="Left"
+                                     BorderThickness="0"
+                                     Background="Transparent"
                                      Margin="0,0,15,0"/>
 
-                            <!--Watermark text-->
-                            <TextBlock Grid.Column="1" Text="Enter to search..." FontWeight="SemiBold" FontSize="16"
-                                       HorizontalAlignment="Left" TextAlignment="Left" VerticalAlignment="Center" 
-                                       Foreground="#B7B5B8" IsHitTestVisible="False" Margin="1,0,0,0">
+                            <!--Watermark Text-->
+                            <TextBlock Grid.Column="1"
+                                       Text="Enter to search..."
+                                       FontWeight="SemiBold"
+                                       FontSize="16"
+                                       HorizontalAlignment="Left" 
+                                       TextAlignment="Left" 
+                                       VerticalAlignment="Center" 
+                                       Foreground="#B7B5B8" 
+                                       IsHitTestVisible="False"
+                                       Margin="1,0,0,0">
 
-                                <!--Making watermark only display when searchQuery is empty-->
+                                <!--Making watermark only display when text box is empty-->
                                 <TextBlock.Style>
                                     <Style TargetType="{x:Type TextBlock}">
 
@@ -421,10 +439,19 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="147" FontSize="15" FontWeight="SemiBold" Foreground="#B7B5B8" 
-                               HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0"
+                               Text="147"
+                               FontSize="15" 
+                               FontWeight="SemiBold"
+                               Foreground="#B7B5B8" 
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"/>
 
-                    <Image Grid.Column="1" Source="/assets/badge.png" Margin="0,0,-5,0" Width="32" Stretch="Uniform"/>
+                    <Image Grid.Column="1"
+                           Source="/assets/badge.png"
+                           Margin="0,0,-5,0"
+                           Width="32" 
+                           Stretch="Uniform"/>
                 </Grid>
                 <!--#endregion-->
             </Grid>
@@ -439,8 +466,13 @@
                 </Grid.ColumnDefinitions>
 
                 <!--#region Sort By-->
-                <TextBlock Grid.Column="0" Text="Sort By:" FontSize="14" FontWeight="SemiBold" Foreground="#B7B5B8"
-                               HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" 
+                           Text="Sort By:"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="#B7B5B8"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"/>
 
                 <ComboBox Grid.Column="1" Style="{DynamicResource ComboBoxStyle1}">
                     <ComboBoxItem Background="Transparent" BorderThickness="0" Content="Latest First"/>
@@ -454,8 +486,14 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0" Text="Add New" FontWeight="SemiBold" Margin="0,0,5,0" FontSize="14"
-                               Foreground="#B7B5B8" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    <TextBlock Grid.Column="0" 
+                               Text="Add New"
+                               FontWeight="SemiBold" 
+                               Margin="0,0,5,0"
+                               FontSize="14"
+                               Foreground="#B7B5B8" 
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Center"/>
 
                     <Button Grid.Column="1" Style="{DynamicResource ButtonStyle1}">
                         <Button.Content>
@@ -475,7 +513,7 @@
         <!--#endregion-->
 
         <!--#region Chat Screen-->
-        <Border Grid.Column="2" BorderThickness=".5,0,.5,0" BorderBrush="#B7B5B8">
+        <Border Grid.Column="2" BorderThickness=".5, 0, .5, 0" BorderBrush="#B7B5B8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100"/>
@@ -492,7 +530,11 @@
                     </Grid.ColumnDefinitions>
 
                     <!--Profile Pic-->
-                    <Custom_Control:ProfileButton Grid.Column="0" HorizontalAlignment="Left" Margin="30,0" ProfileImageSource="/assets/profile1.jpg" IsOnline="False"/>
+                    <Custom_Control:ProfileButton Grid.Column="0" 
+                                                  HorizontalAlignment="Left" 
+                                                  Margin="30,0" 
+                                                  ProfileImageSource="/assets/profile1.jpg" 
+                                                  IsOnline="False"/>
                     
                     <!--Contact Name-->
                     <TextBlock Grid.Column="1" VerticalAlignment="Center">
@@ -508,17 +550,33 @@
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                         </Grid.RowDefinitions>
-                        <UniformGrid Columns="3" Margin="0,30,0,0" VerticalAlignment="Top">
-                            <Image Height="20" Stretch="Uniform" Source="/assets/phone.png"/>
-                            <Image Height="20" Stretch="Uniform" Source="/assets/videocall.png"/>
-                            <Image Height="20" Stretch="Uniform" Source="/assets/more.png"/>
+                        
+                        <UniformGrid Columns="3"
+                                     Margin="0,30,0,0"
+                                     VerticalAlignment="Top">
+                            
+                            <!--Call Icon-->
+                            <Image Source="/assets/phone.png" 
+                                   Height="20" 
+                                   Stretch="Uniform" />
+                            
+                            <!--Video Call Icon-->
+                            <Image Source="/assets/videocall.png" 
+                                   Height="20" 
+                                   Stretch="Uniform"/>
+                            
+                            <!--More Options Icon-->
+                            <Image Source="/assets/more.png"
+                                   Height="20" 
+                                   Stretch="Uniform" />
                         </UniformGrid>
                     </Grid>
                 </Grid>
                 <!--#endregion-->
                 
                 <!--#region Conversation Screen-->
-                <Custom_Control:Conversation Grid.Row="1" BorderBrush="#B7b5b8"/>
+                <Custom_Control:Conversation Grid.Row="1"
+                                             BorderBrush="#B7b5b8"/>
                 <!--#endregion-->
                 
                 <!--#endregion-->
