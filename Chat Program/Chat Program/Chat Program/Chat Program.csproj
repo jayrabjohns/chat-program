@@ -59,8 +59,15 @@
     <Compile Include="Custom Controls\ChatList.xaml.cs">
       <DependentUpon>ChatList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Custom Controls\Conversation.xaml.cs">
+      <DependentUpon>Conversation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel.cs" />
     <Page Include="Custom Controls\ChatList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Custom Controls\Conversation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -144,6 +151,9 @@
     <Resource Include="Assets\more.png" />
     <Resource Include="Assets\phone.png" />
     <Resource Include="Assets\videocall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\play.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

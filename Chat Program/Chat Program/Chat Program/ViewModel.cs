@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Chat_Program
 {
@@ -25,6 +26,15 @@ namespace Chat_Program
 		public string Message { get; set; }
 		public string NewMsgCount { get; set; }
 	}
+
+	public class ConversationMessages
+	{
+		public string MessageStatus { get; set; }
+		public string TimeStamp { get; set; }
+		public string Message { get; set; }
+		public Visibility IsAudioTrack { get; set; }
+	}
+
 
 	class ViewModel
 	{
@@ -99,6 +109,44 @@ namespace Chat_Program
 						IsRead = true,
 						Message = "Hey, this is testing some stuff, please ignore. TESTING\ntest",
 						NewMsgCount = "1"
+					}
+				};
+			}
+		}
+
+		public List<ConversationMessages> Messages
+		{
+			get
+			{
+				return new List<ConversationMessages>
+				{
+					new ConversationMessages()
+					{
+						Message="I am on the left and a very long message, so long in fact that it is presisely *this* many characters!",
+						MessageStatus ="Received", 
+						TimeStamp="Yesterday 14:26 PM",
+						IsAudioTrack= Visibility.Collapsed
+					},
+					new ConversationMessages() 
+					{ 
+						Message = $"This is testing{Environment.NewLine}Newlines!{Environment.NewLine}Wowowow",
+						MessageStatus="Sent",
+						TimeStamp="Yesterday 14:38 PM",
+						IsAudioTrack= Visibility.Collapsed
+					},
+					new ConversationMessages() 
+					{
+						Message="01:24", 
+						MessageStatus="Received",
+						TimeStamp="Yesterday 19:26 PM", 
+						IsAudioTrack= Visibility.Visible
+					},
+					new ConversationMessages()
+					{
+						Message="Amazing!",
+						MessageStatus="Sent",
+						TimeStamp="Today 06:18 AM",
+						IsAudioTrack= Visibility.Collapsed
 					}
 				};
 			}

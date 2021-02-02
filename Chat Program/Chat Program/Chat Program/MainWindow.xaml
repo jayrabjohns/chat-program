@@ -518,6 +518,8 @@
                 <!--#endregion-->
                 
                 <!--#region Conversation Screen-->
+                <Custom_Control:Conversation Grid.Row="1" BorderBrush="#B7b5b8"/>
+                <!--#endregion-->
                 
                 <!--#endregion-->
             </Grid>
