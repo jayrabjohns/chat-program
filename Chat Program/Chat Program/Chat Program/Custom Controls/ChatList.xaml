@@ -134,14 +134,15 @@
                                             <!--#endregion-->
                                         </Grid>
 
+                                        <!--Showing last sent message-->
                                         <Grid Margin="28,0,28,0" Width="330">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
 
-                                            <!--Showing last sent message-->
+                                            <!--Reply Icon-->
                                             <Image x:Name="MsgSent"
                                                    Grid.Column="0"
                                                    Source="/assets/right.png" 
@@ -167,29 +168,47 @@
                                             </Image>
 
                                             <!--Message-->
-                                            <TextBlock Grid.Column="1" 
-                                                       Margin="5,0,0,0"
-                                                       Text="{Binding Message}" 
-                                                       FontSize="14"
-                                                       VerticalAlignment="Center">
+                                            <Border Grid.Column="1"
+                                                    Margin="5,0,0,0">
                                                 
-                                                <TextBlock.Style>
-                                                    <Style TargetType="{x:Type TextBlock}">
+                                                <!--Fading Text Out-->
+                                                <Border.OpacityMask>
+                                                    <LinearGradientBrush StartPoint="0,0"
+                                                                         EndPoint="0,1">
 
-                                                        <!--Changing text colour OnClick / Mouse Hover-->
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}" Value="True">
-                                                                <Setter Property="Foreground" Value="White"/>
-                                                            </DataTrigger>
-                                                            
-                                                            <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}" Value="True">
-                                                                <Setter Property="Foreground" Value="White"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBlock.Style>
-                                            </TextBlock>
-                                            
+                                                        <GradientStop Color="White" Offset="0.15"/>
+                                                        <!--<GradientStop Color="#80FFFFFF" Offset="0.3"/>-->
+                                                        <GradientStop Color="Transparent" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Border.OpacityMask>
+                                                
+                                                <TextBlock Text="{Binding Message}" 
+                                                           FontSize="14"
+                                                           VerticalAlignment="Center"
+                                                           TextWrapping="Wrap"
+                                                           TextTrimming="WordEllipsis"
+                                                           LineStackingStrategy="BlockLineHeight"
+                                                           LineHeight="16"
+                                                           MaxHeight="32">
+
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="{x:Type TextBlock}">
+
+                                                            <!--Changing text colour OnClick / Mouse Hover-->
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}" Value="True">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+
+                                                                <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType={x:Type ListBoxItem}, Mode=FindAncestor}}" Value="True">
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+
                                             <!--Message Count-->
                                             <Grid x:Name="MsgCount" 
                                                   Grid.Column="2"
