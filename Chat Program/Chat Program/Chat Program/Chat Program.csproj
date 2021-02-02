@@ -155,5 +155,25 @@
   <ItemGroup>
     <Resource Include="Assets\play.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\attachment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Emoji\muscle.png" />
+    <Resource Include="Assets\Emoji\ok.png" />
+    <Resource Include="Assets\Emoji\one.png" />
+    <Resource Include="Assets\Emoji\pray.png" />
+    <Resource Include="Assets\Emoji\smile.png" />
+    <Resource Include="Assets\Emoji\wink.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\mic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\happy.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
