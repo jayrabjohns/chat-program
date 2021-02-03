@@ -96,8 +96,6 @@ namespace Chat_Program
 			}
 		}
 
-		private ObservableCollection<Message> ReceiveTextBoxTextList { get; } = new ObservableCollection<Message>() { new Message() { Contents = "test" } };
-		public string ReceiveTextBoxTextStr { get => string.Join(Environment.NewLine, ReceiveTextBoxTextList); }
 
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -117,6 +115,16 @@ namespace Chat_Program
 			ChatClient = new ChatClient(null, 1024);
 		}
 
+		private void SendMessage(string message)
+		{
+			ChatClient.SendString(message);
+			SendTextBoxText = string.Empty;
+
+			ConversationMessages conversationMessage = new ConversationMessages(message, "Sent", "Now", Visibility.Collapsed);
+			Globals.ConversationMessages.Add(conversationMessage);
+		}
+
+		#region Event Handlers
 		private void ConnectButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (RemoteIP != null)
@@ -127,33 +135,39 @@ namespace Chat_Program
 
 		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
-			bool minLengthAdded = false;
-
-			// Checking if the changes could plausibly contain a newline
-			foreach (var change in e.Changes)
-			{
-				if (change.AddedLength >= Environment.NewLine.Length)
-				{
-					minLengthAdded = true;
-					break;
-				}
-			}
-
-			if (minLengthAdded && sender is TextBox textBox)
+			if (sender is TextBox textBox)
 			{
 				// Force updating value of SendTextBoxText
 				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
 
+				bool minLengthAdded = false;
+
+				// Checking if the changes could plausibly contain a newline
+				foreach (var change in e.Changes)
+				{
+					if (change.AddedLength >= Environment.NewLine.Length)
+					{
+						minLengthAdded = true;
+						break;
+					}
+				}
+
 				// Only send message if enter was pressed
-				if (SendTextBoxText.EndsWith(Environment.NewLine))
+				if (minLengthAdded && SendTextBoxText.EndsWith(Environment.NewLine))
 				{
 					string message = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
-
-					ChatClient.SendString(message);
-					ReceiveTextBoxTextList.Add(new Message() { Contents = message });
-					SendTextBoxText = string.Empty;
+					SendMessage(message);
 				}
 			}
 		}
+
+		private void SendButton_Click(object sender, RoutedEventArgs e)
+		{
+			if (!string.IsNullOrWhiteSpace(SendTextBoxText))
+			{
+				SendMessage(SendTextBoxText);
+			}
+		}
+		#endregion
 	}
 }

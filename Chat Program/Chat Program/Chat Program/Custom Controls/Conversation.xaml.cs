@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace Chat_Program.Custom_Controls
 	/// </summary>
 	public partial class Conversation : UserControl
 	{
-		public List<ConversationMessages> Messages { get { return Globals.ConversationMessages; } }
+		public ObservableCollection<ConversationMessages> Messages { get { return Globals.ConversationMessages; } }
 
 		public Conversation()
 		{

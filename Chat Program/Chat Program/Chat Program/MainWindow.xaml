@@ -612,14 +612,17 @@
                 <!--#region Message Send Box & Emoji panel-->
                 <Grid Grid.Row="2" 
                       Background="White">
+                    
                     <Border Background="Transparent"
                             Visibility="{Binding Visibility}" 
                             Margin="30,0,30,0">
+                        
                         <Grid>
                             <Border Background="#F8F6F7"
                                     Height="48"
                                     CornerRadius="25"
                                     HorizontalAlignment="Stretch">
+                                
                                 <Grid Height="Auto">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="60"/>
@@ -634,6 +637,9 @@
                                     <!--Message Send Box-->
                                     <TextBox x:Name="messageSendBox"
                                              Grid.Column="1"
+                                             Text="{Binding SendTextBoxText}"
+                                             TextChanged="SendTextBox_TextChanged"
+                                             AcceptsReturn="True"
                                              FontSize="16" 
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Stretch"
@@ -688,7 +694,9 @@
                             </StackPanel>
 
                             <!--Send Message Button-->
-                            <Button Style="{StaticResource SendMessageButtonStyle}">
+                            <Button Style="{StaticResource SendMessageButtonStyle}" 
+                                    Click="SendButton_Click">
+                                
                                 <Button.Content>
                                     <Image Source="/assets/send.png"
                                            Stretch="Uniform"
