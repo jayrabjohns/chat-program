@@ -111,6 +111,7 @@ namespace Chat_Program
 		public MainWindow()
 		{
 			InitializeComponent();
+			DataContext = this;
 
 			ChatClient = new ChatClient(null, 1024);
 		}
