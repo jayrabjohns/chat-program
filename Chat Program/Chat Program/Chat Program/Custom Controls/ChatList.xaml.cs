@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
+namespace Chat_Program.Custom_Controls
+{
+	/// <summary>
+	/// Interaction logic for ChatList.xaml
+	/// </summary>
+	public partial class ChatList : UserControl
+	{
+		public List<ChatListItem> ChatListItems
+		{
+			get
+			{
+				return new List<ChatListItem>
+				{
+					new ChatListItem(
+						false,
+						false,
+						"/assets/moss.jpg",
+						"Jay Test",
+						"10:30",
+						"Offline",
+						true,
+						"Hey, this is testing some stuff, please ignore. TESTING\ntest",
+						"1")
+				};
+			}
+		}
+
+		public ChatList()
+		{
+			InitializeComponent();
+			DataContext = this;
+		}
+	}
+}

@@ -35,6 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework.Aero2" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -55,6 +56,30 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Custom Controls\ChatList.xaml.cs">
+      <DependentUpon>ChatList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Custom Controls\Conversation.xaml.cs">
+      <DependentUpon>Conversation.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Globals.cs" />
+    <Compile Include="ViewModels.cs" />
+    <Page Include="Custom Controls\ChatList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Custom Controls\Conversation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Custom Controls\MenuListControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Custom Controls\ProfileButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -64,12 +89,19 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ChatClient.cs" />
+    <Compile Include="Custom Controls\MenuListControl.xaml.cs">
+      <DependentUpon>MenuListControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Custom Controls\ProfileButton.xaml.cs">
+      <DependentUpon>ProfileButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -94,6 +126,55 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\noimageerror.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\profile1.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\badge.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\plus.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\moss.JPG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\more.png" />
+    <Resource Include="Assets\phone.png" />
+    <Resource Include="Assets\videocall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\attachment.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\Emoji\muscle.png" />
+    <Resource Include="Assets\Emoji\ok.png" />
+    <Resource Include="Assets\Emoji\one.png" />
+    <Resource Include="Assets\Emoji\pray.png" />
+    <Resource Include="Assets\Emoji\smile.png" />
+    <Resource Include="Assets\Emoji\wink.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\mic.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\send.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\happy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
