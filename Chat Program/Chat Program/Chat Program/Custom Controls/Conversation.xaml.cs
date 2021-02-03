@@ -20,10 +20,12 @@ namespace Chat_Program.Custom_Controls
 	/// </summary>
 	public partial class Conversation : UserControl
 	{
+		public List<ConversationMessages> Messages { get { return Globals.ConversationMessages; } }
+
 		public Conversation()
 		{
 			InitializeComponent();
-			DataContext = new ViewModel();
+			DataContext = this;
 		}
 	}
 }

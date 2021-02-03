@@ -62,7 +62,8 @@
     <Compile Include="Custom Controls\Conversation.xaml.cs">
       <DependentUpon>Conversation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModel.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="ViewModels.cs" />
     <Page Include="Custom Controls\ChatList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
