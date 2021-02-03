@@ -10,9 +10,9 @@
 		
 		Title="Chat Program" 
 		Height="800"
-		Width="1400"
+		Width="1300"
         WindowStyle="SingleBorderWindow"
-		ResizeMode="CanMinimize"
+		ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -370,7 +370,6 @@
             <ColumnDefinition Width="95"/>
             <ColumnDefinition Width="447"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="310"/>
         </Grid.ColumnDefinitions>
 
         <!--#region Left Side Bar-->

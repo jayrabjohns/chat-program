@@ -24,7 +24,11 @@
             </Style.Triggers>
         </Style>
 
-        <DropShadowEffect x:Key="DropShadow" BlurRadius="10" ShadowDepth="3" Direction="360" Color="#F54A4A"/>
+        <DropShadowEffect x:Key="DropShadow"
+                          BlurRadius="10" 
+                          ShadowDepth="3" 
+                          Direction="360" 
+                          Color="#F54A4A"/>
 
         <Style x:Key="ChatIndicatorStyle" TargetType="{x:Type Border}">
             <Setter Property="Background" Value="Transparent"/>
@@ -87,7 +91,8 @@
                                             </Grid.RowDefinitions>
 
                                             <!--Profile Pic-->
-                                            <local:ProfileButton ProfileImageSource="{Binding ContactProfilePic}" IsOnline="{Binding IsOnline}"/>
+                                            <local:ProfileButton ProfileImageSource="{Binding ContactProfilePic}" 
+                                                                 IsOnline="{Binding IsOnline}"/>
 
                                             <!--#region Contact Name & Availability status-->
                                             <Grid Grid.Column="1"
@@ -102,6 +107,7 @@
                                                 <TextBlock Text="{Binding ContactName}" 
                                                            FontWeight="Bold" 
                                                            FontSize="17">
+                                                    
                                                     <TextBlock.Style>
                                                         <Style TargetType="{x:Type TextBlock}">
 
