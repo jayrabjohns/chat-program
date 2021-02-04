@@ -648,7 +648,8 @@
                                              BorderThickness="0"
                                              Background="Transparent"
                                              Margin="0,0,150,0"
-                                             Grid.ColumnSpan="2"/>
+                                             Grid.ColumnSpan="2"
+                                             SpellCheck.IsEnabled="True"/>
 
                                     <!--Placeholder Text-->
                                     <TextBlock Grid.Column="1"
