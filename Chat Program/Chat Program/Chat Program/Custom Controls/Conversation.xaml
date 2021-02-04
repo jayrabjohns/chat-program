@@ -85,8 +85,15 @@
                                 </Grid.Style>
 
                                 <!--Message Bubble-->
-                                <Border CornerRadius="30" Height="Auto" MinHeight="60" MinWidth="50" MaxWidth="400"
-                                    HorizontalAlignment="Right" Width="Auto" VerticalAlignment="Top" Margin="0,0,0,20">
+                                <Border CornerRadius="30"
+                                        Height="Auto" 
+                                        MinHeight="60"
+                                        MinWidth="50" 
+                                        MaxWidth="400"
+                                        HorizontalAlignment="Right"
+                                        Width="Auto" 
+                                        VerticalAlignment="Top"
+                                        Margin="0,0,0,20">
 
                                     <!--Changing bubble colour for left / right-->
                                     <Border.Style>
@@ -188,5 +195,11 @@
         </Style>
     </UserControl.Resources>
     
-    <ListBox Background="Transparent" BorderThickness="0, .05, 0, 0" ItemsSource="{Binding Messages}"/>
+    <ListBox Background="Transparent" 
+             BorderThickness="0, .05, 0, 0" 
+             ItemsSource="{Binding Messages}"
+             Loaded="MessagesListBox_Loaded"
+             Unloaded="MessageListBox_Unloaded"
+             IsSynchronizedWithCurrentItem="True"
+             ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
 </UserControl>
