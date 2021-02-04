@@ -200,6 +200,6 @@
              ItemsSource="{Binding Messages}"
              Loaded="MessagesListBox_Loaded"
              Unloaded="MessageListBox_Unloaded"
-             IsSynchronizedWithCurrentItem="True"
-             ScrollViewer.VerticalScrollBarVisibility="Hidden"/>
+             ScrollViewer.VerticalScrollBarVisibility="Hidden"
+             ScrollViewer.CanContentScroll="False"/>
 </UserControl>
