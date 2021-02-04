@@ -48,14 +48,14 @@ namespace Chat_Program
 
 	}
 
-	public class ConversationMessages
+	public class ConversationMessage
 	{
 		public string Message { get; set; }
 		public string MessageStatus { get; set; }
 		public string TimeStamp { get; set; }
 		public Visibility IsAudioTrack { get; set; }
 
-		public ConversationMessages(string message, string messageStatus, string timeStamp, Visibility isAudioTrack)
+		public ConversationMessage(string message, string messageStatus, string timeStamp, Visibility isAudioTrack)
 		{
 			Message = message;
 			MessageStatus = messageStatus;

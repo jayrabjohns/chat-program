@@ -121,7 +121,7 @@ namespace Chat_Program
 			ChatClient.SendString(message);
 			SendTextBoxText = string.Empty;
 
-			ConversationMessages conversationMessage = new ConversationMessages(message, "Sent", "Now", Visibility.Collapsed);
+			ConversationMessage conversationMessage = new ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
 			Globals.ConversationMessages.Add(conversationMessage);
 		}
 
