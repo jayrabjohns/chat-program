@@ -7,13 +7,13 @@ using System.Windows;
 
 namespace Chat_Program
 {
-	public class MenuItem
+	public class MenuListItem : IMenuListItem
 	{
 		public string PathData { get; set; }
 		public bool IsItemSelected { get; set; }
 		public int ListItemHeight { get; set; }
 
-		public MenuItem(string pathData, bool isItemSelected = false, int listItemHeight = 0)
+		public MenuListItem(string pathData, bool isItemSelected = false, int listItemHeight = 0)
 		{
 			PathData = pathData;
 			IsItemSelected = isItemSelected;
@@ -21,25 +21,25 @@ namespace Chat_Program
 		}
 	}
 
-	public class ChatListItem
+	public class ChatListItem : IChatListItem
 	{
 		public bool IsChatSelected { get; set; }
 		public bool IsOnline { get; set; }
 		public string ContactProfilePic { get; set; }
 		public string ContactName { get; set; }
-		public string LastMessageTime { get; set; }
+		public string TimeStamp { get; set; }
 		public string Availability { get; set; }
 		public bool IsRead { get; set; }
 		public string Message { get; set; }
 		public string NewMsgCount { get; set; }
 
-		public ChatListItem(bool isChatSelected, bool isOnline, string contactProfilePic, string contactName, string lastMessageTime, string availability, bool isRead, string message, string newMsgCount)
+		public ChatListItem(bool isChatSelected, bool isOnline, string contactProfilePic, string contactName, string timeStamp, string availability, bool isRead, string message, string newMsgCount)
 		{
 			IsChatSelected = isChatSelected;
 			IsOnline = isOnline;
 			ContactProfilePic = contactProfilePic;
 			ContactName = contactName;
-			LastMessageTime = lastMessageTime;
+			TimeStamp = timeStamp;
 			Availability = availability;
 			IsRead = isRead;
 			Message = message;
@@ -48,7 +48,7 @@ namespace Chat_Program
 
 	}
 
-	public class ConversationMessage
+	public class ConversationMessage : IConversationMessage
 	{
 		public string Message { get; set; }
 		public string MessageStatus { get; set; }

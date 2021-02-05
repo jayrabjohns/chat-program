@@ -126,7 +126,7 @@
                                                 </TextBlock>
 
                                                 <!--Last Message Time-->
-                                                <TextBlock Text="{Binding LastMessageTime}" 
+                                                <TextBlock Text="{Binding TimeStamp}" 
                                                            FontSize="15" 
                                                            HorizontalAlignment="Right" 
                                                            Foreground="#B7B5B8"/>
