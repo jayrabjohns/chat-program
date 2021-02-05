@@ -13,76 +13,6 @@ namespace Chat_Program
 	/// </summary>
 	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		private IPAddress _hostIP = null;
-		public IPAddress HostIP
-		{
-			get
-			{
-				if (_hostIP == null)
-				{
-					string hostName = Dns.GetHostName();
-					IPAddress[] addresses = Dns.GetHostEntry(hostName).AddressList;
-					_hostIP = addresses[1];
-				}
-
-				return _hostIP;
-			}
-		}
-
-		private int _hostPort = 5000;
-		public int HostPort
-		{
-			get => _hostPort;
-			set
-			{
-				if (_hostPort != value)
-				{
-					_hostPort = value;
-					OnPropertyChanged("HostPort");
-				}
-			}
-		}
-
-		private IPAddress _remoteIP = IPAddress.Parse("127.0.0.1");
-		public IPAddress RemoteIP 
-		{
-			get => _remoteIP;
-			set
-			{
-				if (!_remoteIP.Equals(value))
-				{
-					_remoteIP = value;
-					OnPropertyChanged("RemoteIP");
-				}
-			}
-		}
-
-		public string RemoteIPStr
-		{
-			get => RemoteIP.ToString();
-			set
-			{
-				if (IPAddress.TryParse(value, out IPAddress ipAddress))
-				{
-					RemoteIP = ipAddress;
-				}
-			}
-		}
-
-		private int _remotePort = 5000;
-		public int RemotePort
-		{
-			get => _remotePort;
-			set
-			{
-				if (_remotePort != value)
-				{
-					_remotePort = value;
-					OnPropertyChanged("RemotePort");
-				}
-			}
-		}
-
 		private string _sendTextBoxText = string.Empty;
 		public string SendTextBoxText
 		{
@@ -159,14 +89,6 @@ namespace Chat_Program
 			}
 
 			Globals.ConversationMessages.Add(conversationMessage);
-		}
-
-		private void ConnectButton_Click(object sender, RoutedEventArgs e)
-		{
-			if (RemoteIP != null)
-			{
-				ChatClient.Connect(RemoteIP, RemotePort);
-			}
 		}
 
 		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
