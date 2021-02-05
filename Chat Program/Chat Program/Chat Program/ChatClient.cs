@@ -131,5 +131,42 @@ namespace Chat_Program
 
 			}
 		}*/
+		#region Serialising / Deserialising Messages
+		private byte[] SerialiseMessage(Message message)
+		{
+			using (MemoryStream memoryStream = new MemoryStream())
+			{
+				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
+				{
+					bWriter.Write((int)message.ResponseType);
+					bWriter.Write(message.StringMessage);
+					bWriter.Write(message.Image.Length);
+					bWriter.Write(message.Image);
+					bWriter.Write(message.Audio.Length);
+					bWriter.Write(message.Audio);
+				}
+
+				return memoryStream.ToArray();
+			}
+		}
+
+		public Message DeserialiseMessage(byte[] buffer)
+		{
+			using (MemoryStream memoryStream = new MemoryStream(buffer))
+			{
+				using (BinaryReader bReader = new BinaryReader(memoryStream))
+				{
+					ResponseType responseType = (ResponseType)bReader.ReadInt32();
+					string stringMessage = bReader.ReadString();
+					int imageLen = bReader.ReadInt32();
+					byte[] image = bReader.ReadBytes(imageLen);
+					int audioLen = bReader.ReadInt32();
+					byte[] audio = bReader.ReadBytes(audioLen);
+
+					return new Message(responseType, stringMessage, image, audio);
+				}
+			}
+		}
+		#endregion
 	}
 }
