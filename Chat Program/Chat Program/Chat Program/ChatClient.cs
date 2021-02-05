@@ -67,12 +67,19 @@ namespace Chat_Program
 		#endregion
 
 		#region Sending / Receiving Data
-		public void SendString(string str)
+		public bool TrySendString(string str)
 		{
 			Message message = new Message(ResponseType.StringMessage, str, null, null);
 
 			byte[] buffer = SerialiseMessage(message);
-			SendResponse(buffer);
+
+			if (buffer.Length > 0)
+			{
+				SendResponse(buffer);
+				return true;
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -110,7 +117,9 @@ namespace Chat_Program
 			{
 				byteCount = TcpClient.GetStream().Read(response, 0, response.Length);
 			}
-			catch (System.IO.IOException)
+			catch (Exception e) when 
+			(e is System.IO.IOException 
+			|| e is System.InvalidOperationException)
 			{
 				OnUnexpectedDisconnect?.Invoke();
 			}
@@ -134,7 +143,7 @@ namespace Chat_Program
 					if (ReadResponse(out byte[] buffer) > 0)
 					{
 						Message message = DeserialiseMessage(buffer);
-						App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message));
+						App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
 					}
 				}
 			});
@@ -181,6 +190,16 @@ namespace Chat_Program
 		#region Serialising / Deserialising Messages
 		private byte[] SerialiseMessage(Message message)
 		{
+			if (sizeof(int) + 
+				message.StringMessage.Length * sizeof(char) +
+				sizeof(int) + 
+				message.Image.Length + 
+				sizeof(int) + 
+				message.Audio.Length > MaxResponseBytes)
+			{
+				return new byte[0];
+			}
+
 			using (MemoryStream memoryStream = new MemoryStream())
 			{
 				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
@@ -203,14 +222,21 @@ namespace Chat_Program
 			{
 				using (BinaryReader bReader = new BinaryReader(memoryStream))
 				{
-					ResponseType responseType = (ResponseType)bReader.ReadInt32();
-					string stringMessage = bReader.ReadString();
-					int imageLen = bReader.ReadInt32();
-					byte[] image = bReader.ReadBytes(imageLen);
-					int audioLen = bReader.ReadInt32();
-					byte[] audio = bReader.ReadBytes(audioLen);
+					try
+					{
+						ResponseType responseType = (ResponseType)bReader.ReadInt32();
+						string stringMessage = bReader.ReadString();
+						int imageLen = bReader.ReadInt32();
+						byte[] image = bReader.ReadBytes(imageLen);
+						int audioLen = bReader.ReadInt32();
+						byte[] audio = bReader.ReadBytes(audioLen);
 
-					return new Message(responseType, stringMessage, image, audio);
+						return new Message(responseType, stringMessage, image, audio);
+					}
+					catch (System.IO.EndOfStreamException)
+					{
+						return new Message(ResponseType.StringMessage, "Message too large.", null, null);
+					}
 				}
 			}
 		}
