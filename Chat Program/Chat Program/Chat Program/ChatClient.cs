@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chat_Program
@@ -14,17 +16,18 @@ namespace Chat_Program
 	class ChatClient
 	{
 		public bool Connected { get => TcpClient.Connected; }
-		public bool Listening { get; private set; }
+		public bool Listening { get; private set; } = false;
 
 		private TcpClient TcpClient { get; } = new TcpClient();
 		private int MaxResponseBytes { get; }
+		private Thread MessageListeningThread { get; set; }
 
-		private Action OnReceiveMessage { get; }
+		private Action<Message> OnReceiveMessage { get; }
 		private Action OnCouldntConnect { get; }
 		private Action OnUnexpectedDisconnect { get; }
 		private Action OnCouldntSendResponse { get; }
 
-		public ChatClient(Action onReceiveMessage = null, int maxResponseBytes = 1024, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
+		public ChatClient(int maxResponseBytes = 1024, Action<Message> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
 			MaxResponseBytes = maxResponseBytes;
 
@@ -34,19 +37,23 @@ namespace Chat_Program
 			OnCouldntSendResponse = onCouldntSendResponse;
 		}
 
-		public void Connect(IPAddress ipAddress, int port)
+		#region Connect / Disconnect
+		public bool Connect(IPAddress ipAddress, int port)
 		{
 			if (!Connected)
 			{
 				try
 				{
 					TcpClient.Connect(ipAddress, port);
+					return true;
 				}
 				catch (System.Net.Sockets.SocketException)
 				{
 					OnCouldntConnect?.Invoke();
 				}
 			}
+
+			return false;
 		}
 
 		public void Disconnect()
@@ -57,10 +64,14 @@ namespace Chat_Program
 				TcpClient.Close();
 			}
 		}
+		#endregion
 
+		#region Sending / Receiving Data
 		public void SendString(string str)
 		{
-			byte[] buffer = Encoding.UTF8.GetBytes(str);
+			Message message = new Message(ResponseType.StringMessage, str, null, null);
+
+			byte[] buffer = SerialiseMessage(message);
 			SendResponse(buffer);
 		}
 
@@ -70,6 +81,11 @@ namespace Chat_Program
 		/// <param name="buffer">Byte array response to send</param>
 		public void SendResponse(byte[] buffer)
 		{
+			if (buffer == null)
+			{
+				return;
+			}
+
 			if (buffer.Length > MaxResponseBytes)
 			{
 				Array.Resize(ref buffer, MaxResponseBytes);
@@ -100,7 +116,36 @@ namespace Chat_Program
 			}
 
 			return byteCount;
-		} 
+		}
+
+		public void StartListeningForMessages()
+		{
+			if (Listening)
+			{
+				// Already listening
+				return;
+			}
+
+			Listening = true;
+			MessageListeningThread = new Thread(() =>
+			{
+				while (Listening)
+				{
+					if (ReadResponse(out byte[] buffer) > 0)
+					{
+						Message message = DeserialiseMessage(buffer);
+						App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message));
+					}
+				}
+			});
+			MessageListeningThread.IsBackground = true;
+			MessageListeningThread.Start();
+		}
+
+		public void StopListeningForMessages()
+		{
+			Listening = false;
+		}
 
 		/*public async Task<string> WaitForMessage()
 		{
@@ -131,6 +176,8 @@ namespace Chat_Program
 
 			}
 		}*/
+		#endregion
+
 		#region Serialising / Deserialising Messages
 		private byte[] SerialiseMessage(Message message)
 		{

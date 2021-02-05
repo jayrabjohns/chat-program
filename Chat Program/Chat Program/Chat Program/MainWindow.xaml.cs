@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -113,7 +114,15 @@ namespace Chat_Program
 			InitializeComponent();
 			DataContext = this;
 
-			ChatClient = new ChatClient(null, 1024);
+			ChatClient = new ChatClient(1024, OnReceiveMessage);
+
+
+			while (!ChatClient.Connect(IPAddress.Parse("127.0.0.1"), 5000))
+			{
+				Thread.Sleep(1000);
+			}
+
+			ChatClient.StartListeningForMessages();
 		}
 
 		private void SendMessage(string message)
@@ -126,6 +135,25 @@ namespace Chat_Program
 		}
 
 		#region Event Handlers
+		private void OnReceiveMessage(Message message)
+		{
+			ConversationMessage conversationMessage;
+
+			switch (message.ResponseType)
+			{
+				case ResponseType.StringMessage:
+					conversationMessage = new ConversationMessage(message.StringMessage, "Received", "Now", Visibility.Collapsed);
+					break;
+
+				case ResponseType.Image:
+				case ResponseType.Audio:
+				default:
+					return;
+			}
+
+			Globals.ConversationMessages.Add(conversationMessage);
+		}
+
 		private void ConnectButton_Click(object sender, RoutedEventArgs e)
 		{
 			if (RemoteIP != null)
