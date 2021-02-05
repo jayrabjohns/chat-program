@@ -134,11 +134,11 @@ namespace Chat_Server
 
 			lock (Lock)
 			{
-				foreach (Client client in Clients)
-				{
-					if (includeSender || client != sender)
+				for (int i = Clients.Count - 1; i >= 0; i--)
+				{ 
+					if (includeSender || Clients[i] != sender)
 					{
-						SendResponse(client, response, size);
+						SendResponse(Clients[i], response, size);
 					}
 				}
 			}
