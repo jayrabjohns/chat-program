@@ -127,11 +127,18 @@ namespace Chat_Program
 
 		private void SendMessage(string message)
 		{
-			ChatClient.SendString(message);
-			SendTextBoxText = string.Empty;
+			if (string.IsNullOrWhiteSpace(message))
+			{
+				return;
+			}	
 
-			ConversationMessage conversationMessage = new ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
-			Globals.ConversationMessages.Add(conversationMessage);
+			if (ChatClient.TrySendString(message))
+			{
+				SendTextBoxText = string.Empty;
+
+				ConversationMessage conversationMessage = new ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
+				Globals.ConversationMessages.Add(conversationMessage);
+			}
 		}
 
 		#region Event Handlers
@@ -184,8 +191,8 @@ namespace Chat_Program
 				// Only send message if enter was pressed
 				if (minLengthAdded && SendTextBoxText.EndsWith(Environment.NewLine))
 				{
-					string message = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
-					SendMessage(message);
+					SendTextBoxText = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
+					SendMessage(SendTextBoxText);
 				}
 			}
 		}
