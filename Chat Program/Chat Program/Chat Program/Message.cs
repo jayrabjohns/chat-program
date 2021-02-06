@@ -2,29 +2,26 @@
 
 namespace Chat_Program
 {
-	public class Message : INotifyPropertyChanged
+	public enum ResponseType
 	{
-		private string _contents = string.Empty;
-		public string Contents 
-		{
-			get => _contents;
-			set
-			{
-				if (value != _contents)
-				{
-					_contents = value;
-					OnPropertyChanged("Contents");
-				}
-			}
-		}
+		StringMessage = 0,
+		Image = 1,
+		Audio = 2
+	}
 
-		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
+	public class Message
+	{
+		public ResponseType ResponseType { get; }
+		public string StringMessage { get; }
+		public byte[] Image { get; }
+		public byte[] Audio { get; }
 
-		public void OnPropertyChanged(string propertyName)
+		public Message(ResponseType responseType, string stringMessage, byte[] image, byte[] audio)
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			ResponseType = responseType;
+			StringMessage = stringMessage;
+			Image = image ?? new byte[0];
+			Audio = audio ?? new byte[0];
 		}
-		#endregion
 	}
 }

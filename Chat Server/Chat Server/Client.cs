@@ -7,8 +7,8 @@ namespace Chat_Server
 {
 	class Client
 	{
-		public TcpClient TcpClient { get; private set; }
-		public string DisplayName { get; private set; }
+		public TcpClient TcpClient { get; }
+		public string DisplayName { get; }
 
 		public Client(TcpClient tcpClient, string displayName)
 		{

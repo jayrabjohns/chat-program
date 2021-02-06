@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -12,76 +13,6 @@ namespace Chat_Program
 	/// </summary>
 	public partial class MainWindow : Window, INotifyPropertyChanged
 	{
-		private IPAddress _hostIP = null;
-		public IPAddress HostIP
-		{
-			get
-			{
-				if (_hostIP == null)
-				{
-					string hostName = Dns.GetHostName();
-					IPAddress[] addresses = Dns.GetHostEntry(hostName).AddressList;
-					_hostIP = addresses[1];
-				}
-
-				return _hostIP;
-			}
-		}
-
-		private int _hostPort = 5000;
-		public int HostPort
-		{
-			get => _hostPort;
-			set
-			{
-				if (_hostPort != value)
-				{
-					_hostPort = value;
-					OnPropertyChanged("HostPort");
-				}
-			}
-		}
-
-		private IPAddress _remoteIP = IPAddress.Parse("127.0.0.1");
-		public IPAddress RemoteIP 
-		{
-			get => _remoteIP;
-			set
-			{
-				if (!_remoteIP.Equals(value))
-				{
-					_remoteIP = value;
-					OnPropertyChanged("RemoteIP");
-				}
-			}
-		}
-
-		public string RemoteIPStr
-		{
-			get => RemoteIP.ToString();
-			set
-			{
-				if (IPAddress.TryParse(value, out IPAddress ipAddress))
-				{
-					RemoteIP = ipAddress;
-				}
-			}
-		}
-
-		private int _remotePort = 5000;
-		public int RemotePort
-		{
-			get => _remotePort;
-			set
-			{
-				if (_remotePort != value)
-				{
-					_remotePort = value;
-					OnPropertyChanged("RemotePort");
-				}
-			}
-		}
-
 		private string _sendTextBoxText = string.Empty;
 		public string SendTextBoxText
 		{
@@ -113,25 +44,51 @@ namespace Chat_Program
 			InitializeComponent();
 			DataContext = this;
 
-			ChatClient = new ChatClient(null, 1024);
+			ChatClient = new ChatClient(1024, OnReceiveMessage);
+
+
+			while (!ChatClient.Connect(IPAddress.Parse("127.0.0.1"), 5000))
+			{
+				Thread.Sleep(1000);
+			}
+
+			ChatClient.StartListeningForMessages();
 		}
 
 		private void SendMessage(string message)
 		{
-			ChatClient.SendString(message);
-			SendTextBoxText = string.Empty;
+			if (string.IsNullOrWhiteSpace(message))
+			{
+				return;
+			}	
 
-			ConversationMessages conversationMessage = new ConversationMessages(message, "Sent", "Now", Visibility.Collapsed);
-			Globals.ConversationMessages.Add(conversationMessage);
+			if (ChatClient.TrySendString(message))
+			{
+				SendTextBoxText = string.Empty;
+
+				ConversationMessage conversationMessage = new ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
+				Globals.ConversationMessages.Add(conversationMessage);
+			}
 		}
 
 		#region Event Handlers
-		private void ConnectButton_Click(object sender, RoutedEventArgs e)
+		private void OnReceiveMessage(Message message)
 		{
-			if (RemoteIP != null)
+			ConversationMessage conversationMessage;
+
+			switch (message.ResponseType)
 			{
-				ChatClient.Connect(RemoteIP, RemotePort);
+				case ResponseType.StringMessage:
+					conversationMessage = new ConversationMessage(message.StringMessage, "Received", "Now", Visibility.Collapsed);
+					break;
+
+				case ResponseType.Image:
+				case ResponseType.Audio:
+				default:
+					return;
 			}
+
+			Globals.ConversationMessages.Add(conversationMessage);
 		}
 
 		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -156,8 +113,8 @@ namespace Chat_Program
 				// Only send message if enter was pressed
 				if (minLengthAdded && SendTextBoxText.EndsWith(Environment.NewLine))
 				{
-					string message = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
-					SendMessage(message);
+					SendTextBoxText = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
+					SendMessage(SendTextBoxText);
 				}
 			}
 		}

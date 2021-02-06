@@ -15,6 +15,7 @@ namespace Chat_Server
 	{
 		private static object Lock { get; } = new object();
 		private List<Client> Clients { get; } = new List<Client>();
+		private int TotalClientsConnected { get; set; }
 
 		public void ListenForConnections(int port)
 		{
@@ -57,19 +58,21 @@ namespace Chat_Server
 			{
 				ConsoleIO.LogError($"Disconnecting {client.DisplayName}({client.TcpClient.Client.RemoteEndPoint})");
 
+				Clients.RemoveAt(index);
+
 				if (client.TcpClient.Connected)
 				{
 					client.TcpClient.Close();
 				}
 
-				Clients.RemoveAt(index);
 			}
 		}
 
 		private Client LoginClient(TcpClient tcpClient)
 		{
 			Client client;
-			string displayName = $"Client#{Clients.Count}";
+			string displayName = $"Client#{TotalClientsConnected}";
+			TotalClientsConnected++;
 
 			lock (Lock)
 			{
@@ -92,7 +95,7 @@ namespace Chat_Server
 				try
 				{
 					int numBytes = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
-					SendResponseToAllClients(receiveBuffer, numBytes, client, false);
+					SendResponseToAllClients(receiveBuffer, numBytes, client, true);
 				}
 				catch (IOException)
 				{
@@ -131,11 +134,11 @@ namespace Chat_Server
 
 			lock (Lock)
 			{
-				foreach (Client client in Clients)
-				{
-					if (includeSender || client != sender)
+				for (int i = Clients.Count - 1; i >= 0; i--)
+				{ 
+					if (includeSender || Clients[i] != sender)
 					{
-						SendResponse(client, response, size);
+						SendResponse(Clients[i], response, size);
 					}
 				}
 			}

@@ -11,7 +11,7 @@ namespace Chat_Program.Custom_Controls
 	/// </summary>
 	public partial class Conversation : UserControl
 	{
-		public ObservableCollection<ConversationMessages> Messages { get { return Globals.ConversationMessages; } }
+		public ObservableCollection<ConversationMessage> Messages { get { return Globals.ConversationMessages; } }
 		private ListBox ConversationListBox = null;
 
 		public Conversation()
