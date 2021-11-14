@@ -15,6 +15,7 @@ namespace Chat_Program
 	/// </summary>
 	class ChatClient
 	{
+		private static object Lock { get; } = new object();
 		public bool Connected { get => TcpClient.Connected; }
 		public bool Listening { get; private set; } = false;
 
@@ -143,7 +144,10 @@ namespace Chat_Program
 					if (ReadResponse(out byte[] buffer) > 0)
 					{
 						Message message = DeserialiseMessage(buffer);
-						App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
+						lock (Lock)
+						{
+							App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
+						}
 					}
 				}
 			});
@@ -190,6 +194,7 @@ namespace Chat_Program
 		#region Serialising / Deserialising Messages
 		private byte[] SerialiseMessage(Message message)
 		{
+			// Checking message wont be too large to send
 			if (sizeof(int) + 
 				message.StringMessage.Length * sizeof(char) +
 				sizeof(int) + 

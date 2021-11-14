@@ -13,7 +13,6 @@ namespace Chat_Server
 			// probably use openSSL
 
 			Server server = new Server();
-
 			Thread newConnectionsThread = new Thread(port => server.ListenForConnections((int)port));
 			newConnectionsThread.Start(5000);
 		}
