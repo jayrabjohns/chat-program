@@ -13,7 +13,7 @@ namespace Chat_Server
 	/// </summary>
 	class Server
 	{
-		private object Lock { get; } = new object();
+		private static object Lock { get; } = new object();
 		private List<Client> Clients { get; } = new List<Client>();
 		private int TotalClientsConnected { get; set; }
 
@@ -44,12 +44,8 @@ namespace Chat_Server
 		private void OnNewConection(TcpClient tcpClient)
 		{
 			Client client = LoginClient(tcpClient);
-
-			lock (Lock)
-			{
-				Clients.Add(client);
-				ConsoleIO.Log($"{tcpClient.Client.RemoteEndPoint} conencted as \"{client.DisplayName}.\"");
-			}
+			Clients.Add(client);
+			ConsoleIO.Log($"{tcpClient.Client.RemoteEndPoint} conencted as \"{client.DisplayName}.\"");
 
 			ListenForMessages(client);
 		}
@@ -68,6 +64,7 @@ namespace Chat_Server
 				{
 					client.TcpClient.Close();
 				}
+
 			}
 		}
 
@@ -77,7 +74,11 @@ namespace Chat_Server
 			string displayName = $"Client#{TotalClientsConnected}";
 			TotalClientsConnected++;
 
-			client = new Client(tcpClient, displayName);
+			lock (Lock)
+			{
+				client = new Client(tcpClient, displayName);
+			}
+
 			return client;
 		}
 
@@ -115,10 +116,7 @@ namespace Chat_Server
 		{
 			try
 			{
-				lock (Lock)
-				{
-					client.TcpClient.GetStream().Write(response, 0, size);
-				}
+				client.TcpClient.GetStream().Write(response, 0, size);
 			}
             catch (System.InvalidOperationException)
 			{
@@ -134,11 +132,14 @@ namespace Chat_Server
 				includeSender = false;
 			}
 
-			for (int i = Clients.Count - 1; i >= 0; i--)
+			lock (Lock)
 			{
-				if (includeSender || Clients[i] != sender)
-				{
-					SendResponse(Clients[i], response, size);
+				for (int i = Clients.Count - 1; i >= 0; i--)
+				{ 
+					if (includeSender || Clients[i] != sender)
+					{
+						SendResponse(Clients[i], response, size);
+					}
 				}
 			}
 		}

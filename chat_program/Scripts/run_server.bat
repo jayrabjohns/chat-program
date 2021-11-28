@@ -1,1 +1,0 @@
-dotnet run --project "..\Chat_Server\Chat_Server.csproj"

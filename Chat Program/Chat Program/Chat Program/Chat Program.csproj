@@ -59,14 +59,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Conversation.cs" />
     <Compile Include="Custom Controls\ChatList.xaml.cs">
       <DependentUpon>ChatList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Custom Controls\Conversation.xaml.cs">
       <DependentUpon>Conversation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileIO.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="ViewModelInterfaces.cs" />
     <Compile Include="ViewModels.cs" />
@@ -182,9 +180,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\happy.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include=".notes.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
