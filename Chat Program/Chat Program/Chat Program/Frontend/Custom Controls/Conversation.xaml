@@ -150,7 +150,7 @@
 
                                                 <!--Play button-->
                                                 <Button Style="{StaticResource PlayButtonStyle}">
-                                                    <Image Source="/assets/play.png" 
+                                                    <Image Source="..\assets\play.png" 
                                                            Stretch="Uniform" 
                                                            Width="15"/>
                                                 </Button>

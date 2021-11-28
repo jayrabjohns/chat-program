@@ -29,7 +29,7 @@ namespace Chat_Program.Custom_Controls
 					new ChatListItem(
 						false,
 						false,
-						"/assets/moss.jpg",
+						@"..\assets\moss.jpg",
 						"Jay Test",
 						"10:30",
 						"Offline",

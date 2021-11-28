@@ -382,7 +382,7 @@
             </Grid.RowDefinitions>
 
             <!--Profile Button-->
-            <Custom_Control:ProfileButton ProfileImageSource="\assets\profile1.jpg"
+            <Custom_Control:ProfileButton ProfileImageSource=".\Frontend\assets\profile1.jpg"
                                           Width="50" 
                                           IsOnline="True"
                                           BorderBrush="#2A2E4D"/>
@@ -415,7 +415,7 @@
                             </Grid.ColumnDefinitions>
 
                             <!--Search Icon-->
-                            <Image Source="assets/search.png" 
+                            <Image Source=".\Frontend\assets\search.png" 
                                    Width="25" 
                                    Stretch="Uniform"/>
 
@@ -478,7 +478,7 @@
                                VerticalAlignment="Center"/>
 
                     <Image Grid.Column="1"
-                           Source="/assets/badge.png"
+                           Source=".\Frontend\assets\badge.png"
                            Margin="0,0,-5,0"
                            Width="32" 
                            Stretch="Uniform"/>
@@ -527,7 +527,7 @@
 
                     <Button Grid.Column="1" Style="{DynamicResource ButtonStyle1}">
                         <Button.Content>
-                            <Image Source="/assets/plus.png" Stretch="Uniform" Width="15"/>
+                            <Image Source=".\Frontend\assets\plus.png" Stretch="Uniform" Width="15"/>
                         </Button.Content>
                     </Button>
                 </Grid>
@@ -563,7 +563,7 @@
                     <Custom_Control:ProfileButton Grid.Column="0" 
                                                   HorizontalAlignment="Left" 
                                                   Margin="30,0" 
-                                                  ProfileImageSource="/assets/profile1.jpg" 
+                                                  ProfileImageSource=".\Frontend\assets\profile1.jpg" 
                                                   IsOnline="False"/>
                     
                     <!--Contact Name-->
@@ -586,17 +586,17 @@
                                      VerticalAlignment="Top">
                             
                             <!--Call Icon-->
-                            <Image Source="/assets/phone.png" 
+                            <Image Source=".\Frontend\assets\phone.png" 
                                    Height="20" 
                                    Stretch="Uniform" />
                             
                             <!--Video Call Icon-->
-                            <Image Source="/assets/videocall.png" 
+                            <Image Source=".\Frontend\assets\videocall.png" 
                                    Height="20" 
                                    Stretch="Uniform"/>
                             
                             <!--More Options Icon-->
-                            <Image Source="/assets/more.png"
+                            <Image Source=".\Frontend\assets\more.png"
                                    Height="20" 
                                    Stretch="Uniform" />
                         </UniformGrid>
@@ -630,7 +630,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!--Attachments Button-->
-                                    <Image Source="/assets/attachment.png" 
+                                    <Image Source=".\Frontend\assets\attachment.png" 
                                            Width="25" 
                                            Stretch="Uniform"/>
 
@@ -684,12 +684,12 @@
                                         HorizontalAlignment="Right"
                                         Margin="0,0,70,0">
 
-                                <Image Source="/assets/happy.png" 
+                                <Image Source=".\Frontend\assets\happy.png" 
                                        Stretch="Uniform"
                                        Width="25"
                                        Margin="0, 0, 10, 0"/>
 
-                                <Image Source="/assets/mic.png"
+                                <Image Source=".\Frontend\assets\mic.png"
                                        Stretch="Uniform"
                                        Width="25"/>
                             </StackPanel>
@@ -699,7 +699,7 @@
                                     Click="SendButton_Click">
                                 
                                 <Button.Content>
-                                    <Image Source="/assets/send.png"
+                                    <Image Source=".\Frontend\assets\send.png"
                                            Stretch="Uniform"
                                            Width="25"/>
                                 </Button.Content>
