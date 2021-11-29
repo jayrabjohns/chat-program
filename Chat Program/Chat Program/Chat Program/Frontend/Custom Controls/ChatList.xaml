@@ -151,7 +151,7 @@
                                             <!--Reply Icon-->
                                             <Image x:Name="MsgSent"
                                                    Grid.Column="0"
-                                                   Source=".\Frontend\assets\right.png" 
+                                                   Source="..\assets\right.png" 
                                                    Stretch="Uniform" 
                                                    Width="20">
 
