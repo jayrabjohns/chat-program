@@ -19,7 +19,9 @@
                     <RowDefinition Height="48"/>
                 </Grid.RowDefinitions>
 
-                <controls:SearchBar OnSearch="TryConnect"/>
+                <controls:SearchBar Grid.Row="0" PlaceholderText="Enter port..."/>
+                
+                <controls:SearchBar Grid.Row="1" OnSearch="TryConnectAsync" PlaceholderText="Enter address..."/>
             </Grid>
         </Border>
     </Border>

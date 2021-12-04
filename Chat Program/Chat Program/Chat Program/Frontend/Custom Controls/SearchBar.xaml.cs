@@ -24,7 +24,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 		public Func<string, Task> OnSearch { get; set; }
 
 		private string _placeholderText = "Enter to search...";
-		private string PlaceholderText
+		public string PlaceholderText
 		{
 			get => _placeholderText;
 			set

@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Chat_Program.Data
+namespace Chat_Program.Model
 {
+	public interface IMessage
+	{
+		ResponseType ResponseType { get; }
+		byte[] Content { get; }
+	}
+
 	public interface IMessageDisplayer
 	{
 		string Message { get; set; }
@@ -35,5 +42,20 @@ namespace Chat_Program.Data
 		string PathData { get; set; }
 		bool IsItemSelected { get; set; }
 		int ListItemHeight { get; set; }
+	}
+
+	public interface IChatClient
+	{
+		int MaxResponseBytes { get; }
+		Action<IMessage> OnReceiveMessage { get; }
+		Action OnCouldntConnect { get; }
+		Action OnUnexpectedDisconnect { get; }
+		Action OnCouldntSendResponse { get; }
+	}
+
+	public interface IConversation
+	{
+		Backend.ChatClient ChatClient { get; }
+		ObservableCollection<IConversationMessage> ConversationMessages { get; }
 	}
 }

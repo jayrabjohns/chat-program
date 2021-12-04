@@ -1,4 +1,4 @@
-﻿using Chat_Program.Data;
+﻿using Chat_Program.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

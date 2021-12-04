@@ -1,5 +1,5 @@
 ﻿using Chat_Program.Backend;
-using Chat_Program.Data;
+using Chat_Program.Model;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
@@ -13,7 +13,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 	/// </summary>
 	public partial class Conversation : UserControl
 	{
-		public ObservableCollection<ConversationMessage> Messages { get { return Globals.ConversationMessages; } }
+		public ObservableCollection<IConversationMessage> Messages { get { return Globals.CurrentConversation.ConversationMessages; } }
 		private ListBox ConversationListBox = null;
 
 		public Conversation()

@@ -13,32 +13,23 @@ namespace Chat_Program.Backend
 	/// <summary>
 	/// Handles sending / recieving of messages with a given server
 	/// </summary>
-	class ChatClient
+	public class ChatClient
 	{
+		public TcpClient TcpClient { get; }
 		public bool Connected { get => TcpClient.Connected; }
 		public bool Listening { get; private set; } = false;
 
-		private TcpClient TcpClient { get; } = new TcpClient();
-		private int MaxResponseBytes { get; }
 		private Thread MessageListeningThread { get; set; }
+		private Model.ChatClient _data { get; }
 
-		private Action<Message> OnReceiveMessage { get; }
-		private Action OnCouldntConnect { get; }
-		private Action OnUnexpectedDisconnect { get; }
-		private Action OnCouldntSendResponse { get; }
-
-		public ChatClient(int maxResponseBytes = 1024, Action<Message> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
+		public ChatClient(int maxResponseBytes = 1024, Action<Model.IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
-			MaxResponseBytes = maxResponseBytes;
-
-			OnReceiveMessage = onReceiveMessage;
-			OnCouldntConnect = onCouldntConnect;
-			OnUnexpectedDisconnect = onUnexpectedDisconnect;
-			OnCouldntSendResponse = onCouldntSendResponse;
+			_data = new Model.ChatClient(maxResponseBytes, onReceiveMessage, onCouldntConnect, onUnexpectedDisconnect, onCouldntSendResponse);
+			TcpClient = new TcpClient();
 		}
 
 		#region Connect / Disconnect
-		public bool Connect(IPAddress ipAddress, int port)
+		public bool TryConnect(IPAddress ipAddress, int port)
 		{
 			if (!Connected)
 			{
@@ -49,8 +40,23 @@ namespace Chat_Program.Backend
 				}
 				catch (System.Net.Sockets.SocketException e)
 				{
-					OnCouldntConnect?.Invoke();
+					_data.OnCouldntConnect?.Invoke();
 				}
+			}
+
+			return false;
+		}
+
+		public bool TryConnect(string ipString, int port)
+		{
+			if (string.Equals(ipString, "localhost", StringComparison.InvariantCultureIgnoreCase))
+			{
+				ipString = "127.0.0.1";
+			}
+
+			if (IPAddress.TryParse(ipString, out IPAddress address))
+			{
+				return TryConnect(address, port);
 			}
 
 			return false;
@@ -69,8 +75,7 @@ namespace Chat_Program.Backend
 		#region Sending / Receiving Data
 		public bool TrySendString(string str)
 		{
-			Message message = new Message(ResponseType.StringMessage, str, null, null);
-
+			Model.Message message = new Model.Message(str);
 			byte[] buffer = SerialiseMessage(message);
 
 			if (buffer.Length > 0)
@@ -93,9 +98,9 @@ namespace Chat_Program.Backend
 				return;
 			}
 
-			if (buffer.Length > MaxResponseBytes)
+			if (buffer.Length > _data.MaxResponseBytes)
 			{
-				Array.Resize(ref buffer, MaxResponseBytes);
+				Array.Resize(ref buffer, _data.MaxResponseBytes);
 			}
 
 			if (Connected)
@@ -104,13 +109,13 @@ namespace Chat_Program.Backend
 			}
 			else
 			{
-				OnCouldntSendResponse?.Invoke();
+				_data.OnCouldntSendResponse?.Invoke();
 			}
 		}
 
 		public int ReadResponse(out byte[] response)
 		{
-			response = new byte[MaxResponseBytes];
+			response = new byte[_data.MaxResponseBytes];
 			int byteCount = 0;
 
 			try
@@ -121,7 +126,7 @@ namespace Chat_Program.Backend
 			(e is System.IO.IOException 
 			|| e is System.InvalidOperationException)
 			{
-				OnUnexpectedDisconnect?.Invoke();
+				_data.OnUnexpectedDisconnect?.Invoke();
 			}
 
 			return byteCount;
@@ -142,8 +147,8 @@ namespace Chat_Program.Backend
 				{
 					if (ReadResponse(out byte[] buffer) > 0)
 					{
-						Message message = DeserialiseMessage(buffer);
-						App.Current.Dispatcher.Invoke(() => OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
+						Model.IMessage message = DeserialiseMessage(buffer);
+						App.Current.Dispatcher.Invoke(() => _data.OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
 					}
 				}
 			});
@@ -155,48 +160,14 @@ namespace Chat_Program.Backend
 		{
 			Listening = false;
 		}
-
-		/*public async Task<string> WaitForMessage()
-		{
-			await TcpClient.GetStream().
-		}*/
-
-		/*public void StartListeningForMessages(AsyncCallback onMessageReceived)
-		{
-			if (TcpClient.GetStream().CanRead && Connected && !Listening)
-			{
-				byte[] buffer = new byte[MaxMessageBytes];
-
-				try
-				{
-					TcpClient.GetStream().BeginRead(buffer, 0, buffer.Length, onMessageReceived, TcpClient.GetStream());
-				}
-				catch (System.IO.IOException)
-				{
-					// Server shut unexpectedly
-				}
-			}
-		}
-
-		public void StopListeningForMessages()
-		{
-			if (Listening)
-			{
-
-			}
-		}*/
 		#endregion
 
 		#region Serialising / Deserialising Messages
-		private byte[] SerialiseMessage(Message message)
+		private byte[] SerialiseMessage(Model.IMessage message)
 		{
-			if (sizeof(int) + 
-				message.StringMessage.Length * sizeof(char) +
-				sizeof(int) + 
-				message.Image.Length + 
-				sizeof(int) + 
-				message.Audio.Length > MaxResponseBytes)
+			if (sizeof(byte) + sizeof(int) + sizeof(char) * message.Content.Length > _data.MaxResponseBytes)
 			{
+				// Message exceeds max response bytes
 				return new byte[0];
 			}
 
@@ -204,19 +175,16 @@ namespace Chat_Program.Backend
 			{
 				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
 				{
-					bWriter.Write((int)message.ResponseType);
-					bWriter.Write(message.StringMessage);
-					bWriter.Write(message.Image.Length);
-					bWriter.Write(message.Image);
-					bWriter.Write(message.Audio.Length);
-					bWriter.Write(message.Audio);
+					bWriter.Write((byte)message.ResponseType);
+					bWriter.Write(message.Content.Length);
+					bWriter.Write(message.Content);
 				}
 
 				return memoryStream.ToArray();
 			}
 		}
 
-		public Message DeserialiseMessage(byte[] buffer)
+		public Model.Message DeserialiseMessage(byte[] buffer)
 		{
 			using (MemoryStream memoryStream = new MemoryStream(buffer))
 			{
@@ -224,18 +192,15 @@ namespace Chat_Program.Backend
 				{
 					try
 					{
-						ResponseType responseType = (ResponseType)bReader.ReadInt32();
-						string stringMessage = bReader.ReadString();
-						int imageLen = bReader.ReadInt32();
-						byte[] image = bReader.ReadBytes(imageLen);
-						int audioLen = bReader.ReadInt32();
-						byte[] audio = bReader.ReadBytes(audioLen);
+						Model.ResponseType responseType = (Model.ResponseType)bReader.ReadByte();
+						int contentSize = bReader.ReadInt32();
+						byte[] content = bReader.ReadBytes(contentSize);
 
-						return new Message(responseType, stringMessage, image, audio);
+						return new Model.Message(content, responseType);
 					}
 					catch (System.IO.EndOfStreamException)
 					{
-						return new Message(ResponseType.StringMessage, "Message too large.", null, null);
+						return new Model.Message("Message too large.");
 					}
 				}
 			}

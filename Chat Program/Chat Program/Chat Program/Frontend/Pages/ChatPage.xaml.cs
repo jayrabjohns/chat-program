@@ -1,5 +1,5 @@
 ﻿using Chat_Program.Backend;
-using Chat_Program.Data;
+using Chat_Program.Frontend.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,14 +55,9 @@ namespace Chat_Program.Frontend.Pages
 			InitializeComponent();
 			this.DataContext = this;
 
-			ChatClient = new ChatClient(1024, OnReceiveMessage);
-
-			//while (!ChatClient.Connect(IPAddress.Parse("127.0.0.1"), 5000))
-			//{
-			//	Thread.Sleep(1000);
-			//}
-
-			//ChatClient.StartListeningForMessages();
+			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(5, OnReceiveMessage);
+			serverConnectionDialog.Owner = Window.GetWindow(this);
+			serverConnectionDialog.ShowDialog();
 		}
 
 		private void SendMessage(string message)
@@ -76,31 +71,31 @@ namespace Chat_Program.Frontend.Pages
 			{
 				SendTextBoxText = string.Empty;
 
-				ConversationMessage conversationMessage = new ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
-				Globals.ConversationMessages.Add(conversationMessage);
+				Model.ConversationMessage conversationMessage = new Model.ConversationMessage(message, "Sent", "Now", Visibility.Collapsed);
+				Model.Globals.CurrentConversation.ConversationMessages.Add(conversationMessage);
 			}
 		}
 
-		#region Event Handlers
-		private void OnReceiveMessage(Message message)
+		private void OnReceiveMessage(Model.IMessage message)
 		{
-			ConversationMessage conversationMessage;
+			Model.ConversationMessage conversationMessage;
 
 			switch (message.ResponseType)
 			{
-				case ResponseType.StringMessage:
-					conversationMessage = new ConversationMessage(message.StringMessage, "Received", "Now", Visibility.Collapsed);
+				case Model.ResponseType.String:
+					conversationMessage = new Model.ConversationMessage(Encoding.UTF8.GetString(message.Content), "Received", "Now", Visibility.Collapsed);
 					break;
 
-				case ResponseType.Image:
-				case ResponseType.Audio:
+				case Model.ResponseType.Image:
+				case Model.ResponseType.Audio:
 				default:
 					return;
 			}
 
-			Globals.ConversationMessages.Add(conversationMessage);
+			Model.Globals.CurrentConversation.ConversationMessages.Add(conversationMessage);
 		}
 
+		#region Event Handlers
 		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			if (sender is TextBox textBox)

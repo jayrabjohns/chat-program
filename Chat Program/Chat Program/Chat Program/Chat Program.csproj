@@ -67,18 +67,14 @@
     <Compile Include="Frontend\Custom Controls\Conversation.xaml.cs">
       <DependentUpon>Conversation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Backend\Globals.cs" />
-    <Compile Include="Data\ViewModelInterfaces.cs" />
-    <Compile Include="Data\ViewModels.cs" />
+    <Compile Include="Model\Globals.cs" />
+    <Compile Include="Model\ViewModelInterfaces.cs" />
+    <Compile Include="Model\ViewModels.cs" />
     <Page Include="Frontend\Custom Controls\ChatList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Frontend\Custom Controls\Conversation.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Frontend\Custom Controls\CurvedTextBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,9 +111,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Backend\ChatClient.cs" />
-    <Compile Include="Frontend\Custom Controls\CurvedTextBox.xaml.cs">
-      <DependentUpon>CurvedTextBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Frontend\Custom Controls\MenuListControl.xaml.cs">
       <DependentUpon>MenuListControl.xaml</DependentUpon>
     </Compile>
@@ -142,7 +135,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backend\Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
