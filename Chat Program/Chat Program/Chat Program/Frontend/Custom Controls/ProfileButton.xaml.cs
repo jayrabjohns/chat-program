@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Chat_Program.Custom_Controls
+namespace Chat_Program.Frontend.Custom_Controls
 {
 	/// <summary>
 	/// Interaction logic for ProfileButton.xaml
@@ -23,8 +23,8 @@ namespace Chat_Program.Custom_Controls
 		public ProfileButton()
 		{
 			InitializeComponent();
+            this.DataContext = this;
 		}
-
 
         public SolidColorBrush StrokeBrush
         {
@@ -32,21 +32,11 @@ namespace Chat_Program.Custom_Controls
             set { SetValue(StrokeBrushProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StrokeBrushProperty =
-            DependencyProperty.Register("StrokeBrush", typeof(SolidColorBrush), typeof(ProfileButton));
-
-
         public bool IsOnline
         {
             get { return (bool)GetValue(IsOnlineProperty); }
             set { SetValue(IsOnlineProperty, value); }
         }
-
-        // Using a DependencyProperty as the backing store for ImageSource.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty IsOnlineProperty =
-            DependencyProperty.Register("IsOnline", typeof(bool), typeof(ProfileButton));
-
 
         public ImageSource ProfileImageSource
         {
@@ -54,8 +44,9 @@ namespace Chat_Program.Custom_Controls
             set { SetValue(ImageSourceProperty, value); }
         }
 
-        // Using a DependencyProperty as the backing store for ImageSource.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty ImageSourceProperty =
-            DependencyProperty.Register("ProfileImageSource", typeof(ImageSource), typeof(ProfileButton));
+        // Dependency Property enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IsOnlineProperty = DependencyProperty.Register(nameof(IsOnline), typeof(bool), typeof(ProfileButton));
+        public static readonly DependencyProperty ImageSourceProperty = DependencyProperty.Register(nameof(ProfileImageSource), typeof(ImageSource), typeof(ProfileButton));
+        public static readonly DependencyProperty StrokeBrushProperty = DependencyProperty.Register(nameof(StrokeBrush), typeof(SolidColorBrush), typeof(ProfileButton));
     }
 }

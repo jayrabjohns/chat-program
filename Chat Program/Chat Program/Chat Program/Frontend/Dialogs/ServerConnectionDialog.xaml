@@ -1,0 +1,27 @@
+﻿<Window x:Class="Chat_Program.Frontend.Dialogs.ServerConnectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Chat_Program.Frontend.Dialogs"
+        mc:Ignorable="d"
+        xmlns:controls="clr-namespace:Chat_Program.Frontend.Custom_Controls"
+        
+        Title="ServerConnectionDialog"
+        Height="Auto"
+        Width="300">
+
+    <Border Background="Transparent" Height="Auto" Visibility="{Binding Visibility}">
+        <Border Background="#F8F6F7" Height="Auto" CornerRadius="25" HorizontalAlignment="Stretch">
+            <Grid Height="Auto">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="48"/>
+                    <RowDefinition Height="48"/>
+                </Grid.RowDefinitions>
+
+                <controls:SearchBar OnSearch="TryConnect"/>
+            </Grid>
+        </Border>
+    </Border>
+
+</Window>

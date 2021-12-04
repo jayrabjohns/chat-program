@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Chat_Program
+namespace Chat_Program.Backend
 {
 	public enum ResponseType
 	{

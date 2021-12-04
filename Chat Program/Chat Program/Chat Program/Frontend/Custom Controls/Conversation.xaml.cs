@@ -1,10 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using Chat_Program.Backend;
+using Chat_Program.Data;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Chat_Program.Custom_Controls
+namespace Chat_Program.Frontend.Custom_Controls
 {
 	/// <summary>
 	/// Interaction logic for Conversation.xaml

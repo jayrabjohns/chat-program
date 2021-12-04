@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Chat_Program.Backend;
+using Chat_Program.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -32,7 +34,7 @@ namespace Chat_Program.Frontend.Pages
 				if (_sendTextBoxText != value)
 				{
 					_sendTextBoxText = value;
-					OnPropertyChanged("SendTextBoxText");
+					OnPropertyChanged(nameof(SendTextBoxText));
 				}
 			}
 		}
@@ -51,17 +53,16 @@ namespace Chat_Program.Frontend.Pages
 		public ChatPage()
 		{
 			InitializeComponent();
-			DataContext = this;
+			this.DataContext = this;
 
 			ChatClient = new ChatClient(1024, OnReceiveMessage);
 
+			//while (!ChatClient.Connect(IPAddress.Parse("127.0.0.1"), 5000))
+			//{
+			//	Thread.Sleep(1000);
+			//}
 
-			while (!ChatClient.Connect(IPAddress.Parse("127.0.0.1"), 5000))
-			{
-				Thread.Sleep(1000);
-			}
-
-			ChatClient.StartListeningForMessages();
+			//ChatClient.StartListeningForMessages();
 		}
 
 		private void SendMessage(string message)

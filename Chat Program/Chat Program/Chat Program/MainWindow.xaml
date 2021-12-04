@@ -3,8 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:local="clr-namespace:Chat_Program" 
-        xmlns:Custom_Control="clr-namespace:Chat_Program.Custom_Controls"
+		xmlns:local="clr-namespace:Chat_Program"
         xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
         mc:Ignorable="d"
         x:Name="_mainWindow"
@@ -15,6 +14,10 @@
         WindowStyle="SingleBorderWindow"
 		ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen">
+
+    <!--<Window.DataContext>
+        <local:MainWindow/>
+    </Window.DataContext>-->
 
     <Grid>
         <Frame Source=".\Frontend\Pages\ChatPage.xaml"></Frame>

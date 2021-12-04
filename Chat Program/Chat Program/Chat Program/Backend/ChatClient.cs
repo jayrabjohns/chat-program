@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Chat_Program
+namespace Chat_Program.Backend
 {
 	/// <summary>
 	/// Handles sending / recieving of messages with a given server
@@ -47,7 +47,7 @@ namespace Chat_Program
 					TcpClient.Connect(ipAddress, port);
 					return true;
 				}
-				catch (System.Net.Sockets.SocketException)
+				catch (System.Net.Sockets.SocketException e)
 				{
 					OnCouldntConnect?.Invoke();
 				}

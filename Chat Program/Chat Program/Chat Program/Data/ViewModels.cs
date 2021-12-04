@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Chat_Program
+namespace Chat_Program.Data
 {
 	public class MenuListItem : IMenuListItem
 	{

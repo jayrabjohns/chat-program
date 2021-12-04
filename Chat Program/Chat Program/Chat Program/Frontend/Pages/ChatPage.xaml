@@ -4,7 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:Chat_Program.Frontend.Pages"
-      xmlns:Custom_Control="clr-namespace:Chat_Program.Custom_Controls"
+      xmlns:Custom_Control="clr-namespace:Chat_Program.Frontend.Custom_Controls"
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
       mc:Ignorable="d" 
       
@@ -12,7 +12,6 @@
       d:DesignWidth="1300"
       x:Name="_chatpage"
       Title="ChatPage">
-
     <Page.Resources>
         <!--#region Sort Combo Box Style-->
         <Style x:Key="FocusVisual">
@@ -366,7 +365,7 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="95"/>
-            <ColumnDefinition Width="447"/>
+            <!--<ColumnDefinition Width="447"/>-->
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -391,76 +390,21 @@
         </Grid>
         <!--#endregion-->
 
-        <!--#region Middle Left-->
+        <!--#region Middle Left--><!--
         <StackPanel Grid.Column="1" Orientation="Vertical" Margin="0,30,0,0">
 
-            <!--#region Search & Starred Msgs-->
+            --><!--#region Search & Starred Msgs--><!--
             <Grid Margin="30,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
 
-                <!--#region Search Bar-->
-                <Border Grid.Column="0" Background="Transparent" Height="Auto" Visibility="{Binding Visibility}">
-
-                    <!--Creating curved border-->
-                    <Border Background="#F8F6F7" Height="48" CornerRadius="25" HorizontalAlignment="Stretch">
-                        <Grid Height="Auto">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="60"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!--Search Icon-->
-                            <Image Source="..\assets\search.png" 
-                                   Width="25" 
-                                   Stretch="Uniform"/>
-
-                            <!--Search Query-->
-                            <TextBox Grid.Column="1"
-                                     x:Name="searchQuery"
-                                     FontSize="16"
-                                     HorizontalAlignment="Stretch" 
-                                     VerticalAlignment="Stretch" 
-                                     VerticalContentAlignment="Center"
-                                     TextAlignment="Left"
-                                     BorderThickness="0"
-                                     Background="Transparent"
-                                     Margin="0,0,15,0"/>
-
-                            <!--Watermark Text-->
-                            <TextBlock Grid.Column="1"
-                                       Text="Enter to search..."
-                                       FontWeight="SemiBold"
-                                       FontSize="16"
-                                       HorizontalAlignment="Left" 
-                                       TextAlignment="Left" 
-                                       VerticalAlignment="Center" 
-                                       Foreground="#B7B5B8" 
-                                       IsHitTestVisible="False"
-                                       Margin="1,0,0,0">
-
-                                <!--Making watermark only display when text box is empty-->
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=searchQuery}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
-                    </Border>
+                <Border Height="48">
+                    <Custom_Control:SearchBar/>
                 </Border>
-                <!--#endregion-->
 
-                <!--#region Starred Msgs-->
+                --><!--#region Starred Msgs--><!--
                 <Grid Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -481,11 +425,11 @@
                            Width="32" 
                            Stretch="Uniform"/>
                 </Grid>
-                <!--#endregion-->
+                --><!--#endregion--><!--
             </Grid>
-            <!--#endregion-->
+            --><!--#endregion-->
 
-            <!--#region Sort & Add New-->
+            <!--#region Sort & Add New--><!--
             <Grid Grid.Row="1" Height="65" Margin="30,0,30,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -493,7 +437,7 @@
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!--#region Sort By-->
+                --><!--#region Sort By--><!--
                 <TextBlock Grid.Column="0" 
                            Text="Sort By:"
                            FontSize="14"
@@ -505,9 +449,9 @@
                 <ComboBox Grid.Column="1" Style="{DynamicResource ComboBoxStyle1}">
                     <ComboBoxItem Background="Transparent" BorderThickness="0" Content="Latest First"/>
                 </ComboBox>
-                <!--#endregion-->
+                --><!--#endregion-->
 
-                <!--#region Add New-->
+                <!--#region Add New--><!--
                 <Grid Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -529,16 +473,16 @@
                         </Button.Content>
                     </Button>
                 </Grid>
-                <!--#endregion-->
+                --><!--#endregion--><!--
 
             </Grid>
-            <!--#endregion-->
+            --><!--#endregion-->
 
-            <!--#region Chat List-->
+            <!--#region Chat List--><!--
             <Custom_Control:ChatList/>
-            <!--#endregion-->
+            --><!--#endregion--><!--
         </StackPanel>
-        <!--#endregion-->
+        --><!--#endregion-->
 
         <!--#region Chat Screen-->
         <Border Grid.Column="2" BorderThickness=".5, 0, .5, 0" BorderBrush="#B7B5B8">

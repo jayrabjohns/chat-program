@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chat_Program.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Chat_Program
+namespace Chat_Program.Backend
 {
 	/// <summary>
 	/// Stores references to objects needed by multiple other classes.

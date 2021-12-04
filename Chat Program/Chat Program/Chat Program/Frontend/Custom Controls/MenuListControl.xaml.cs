@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chat_Program.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace Chat_Program.Custom_Controls
+namespace Chat_Program.Frontend.Custom_Controls
 {
 	/// <summary>
 	/// Interaction logic for MenuListControl.xaml
