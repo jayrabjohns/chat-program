@@ -52,19 +52,20 @@ namespace Chat_Server
 
 		private void DisconnectClient(Client client)
 		{
-			int index = Clients.IndexOf(client);
-
-			if (index != -1)
+			lock (Clients)
 			{
-				ConsoleIO.LogError($"Disconnecting {client.DisplayName}({client.TcpClient.Client.RemoteEndPoint})");
-
-				Clients.RemoveAt(index);
-
-				if (client.TcpClient.Connected)
+				int index = Clients.IndexOf(client);
+				if (index != -1)
 				{
-					client.TcpClient.Close();
-				}
+					ConsoleIO.LogError($"Disconnecting {client.DisplayName}({client.TcpClient.Client.RemoteEndPoint})");
 
+					Clients.RemoveAt(index);
+
+					if (client.TcpClient.Connected)
+					{
+						client.TcpClient.Close();
+					}
+				}
 			}
 		}
 
