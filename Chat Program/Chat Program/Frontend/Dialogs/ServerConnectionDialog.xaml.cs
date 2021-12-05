@@ -73,5 +73,11 @@ namespace Chat_Program.Frontend.Dialogs
 				this.Close();
 			}
 		}
+
+		private Task SetPort(string portString)
+		{
+			PortString = portString;
+			return Task.CompletedTask;
+		}
 	}
 }

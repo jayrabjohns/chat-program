@@ -3,9 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Chat_Program.Frontend.Custom_Controls"
+             xmlns:local="clr-namespace:Chat_Program.Frontend.Custom_Controls" d:DataContext="{d:DesignInstance Type=local:SearchBar}"
              mc:Ignorable="d" 
-             
+             x:Name="_searchBar"
              d:DesignHeight="48"
              d:DesignWidth="300">
     <Border Background="Transparent" Height="Auto" Visibility="{Binding Visibility}">
@@ -26,7 +26,7 @@
                 <!--Search Query-->
                 <TextBox x:Name="searchQuery"
                          Grid.Column="1"
-                         Text="{Binding SearchQueryText}"
+                         Text="{Binding ElementName=_searchBar, Path=SearchQueryText, UpdateSourceTrigger=PropertyChanged}"
                          FontSize="16"
                          HorizontalAlignment="Stretch" 
                          VerticalAlignment="Stretch" 
@@ -34,7 +34,8 @@
                          TextAlignment="Left"
                          BorderThickness="0"
                          Background="Transparent"
-                         Margin="0,0,15,0" KeyDown="searchQuery_KeyDown"/>
+                         Margin="0,0,15,0" 
+                         KeyDown="searchQuery_KeyDown"/>
 
                 <!--Watermark Text-->
                 <TextBlock Grid.Column="1"

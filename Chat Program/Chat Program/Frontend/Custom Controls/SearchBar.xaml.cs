@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -27,6 +28,12 @@ namespace Chat_Program.Frontend.Custom_Controls
 			}
 		}
 
+		//public static readonly DependencyProperty SearchQueryTextProperty = DependencyProperty.Register(nameof(SearchQueryText), typeof(string), typeof(SearchBar));
+		//public string SearchQueryText
+		//{
+		//	get => (string)GetValue(SearchQueryTextProperty);
+		//	set { SetValue(SearchQueryTextProperty, value); }
+		//}
 		private string _searchQueryText = string.Empty;
 		public string SearchQueryText
 		{
