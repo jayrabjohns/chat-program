@@ -40,7 +40,8 @@ namespace Chat_Program.Frontend.Pages
 
 		public ChatPage()
 		{
-			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(OnReceiveMessage);
+			// OnReceiveMessage needs to be called from the UI thread
+			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog((message) => App.Current.Dispatcher.Invoke(() => OnReceiveMessage(message)));
 			serverConnectionDialog.Owner = Window.GetWindow(this);
 			serverConnectionDialog.ShowDialog();
 

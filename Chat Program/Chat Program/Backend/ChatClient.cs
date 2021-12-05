@@ -144,7 +144,7 @@ namespace Chat_Program.Backend
 					if (ReadResponse(out byte[] buffer) > 0)
 					{
 						Model.IMessage message = DeserialiseMessage(buffer);
-						App.Current.Dispatcher.Invoke(() => _data.OnReceiveMessage?.Invoke(message)); // Needs to be called from the UI thread
+						_data.OnReceiveMessage?.Invoke(message);
 					}
 				}
 			});
