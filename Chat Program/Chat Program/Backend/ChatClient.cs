@@ -16,12 +16,17 @@ namespace Chat_Program.Backend
 		public bool Listening { get; private set; } = false;
 
 		private Thread MessageListeningThread { get; set; }
+		private RsaImpl RsaImpl { get; }
+		private string KeyPairPath { get => @"..\Model\Keys\keyPair"; }
 		private Model.ChatClient _data { get; }
 
 		public ChatClient(int maxResponseBytes = 1024, Action<Model.IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
 			_data = new Model.ChatClient(maxResponseBytes, onReceiveMessage, onCouldntConnect, onUnexpectedDisconnect, onCouldntSendResponse);
 			TcpClient = new TcpClient();
+			RsaImpl = new RsaImpl(4096);
+			//byte[] keyPair = File.ReadAllBytes(KeyPairPath);
+			//RsaImpl.SetKeyPair(keyPair);
 		}
 
 		#region Connect / Disconnect
@@ -76,8 +81,7 @@ namespace Chat_Program.Backend
 
 			if (buffer.Length > 0)
 			{
-				SendResponse(buffer);
-				return true;
+				return TrySendResponse(buffer);
 			}
 
 			return false;
@@ -87,11 +91,11 @@ namespace Chat_Program.Backend
 		/// Sends a response to the server.
 		/// </summary>
 		/// <param name="buffer">Byte array response to send</param>
-		public void SendResponse(byte[] buffer)
+		public bool TrySendResponse(byte[] buffer)
 		{
 			if (buffer == null)
 			{
-				return;
+				return false;
 			}
 
 			if (buffer.Length > _data.MaxResponseBytes)
@@ -101,12 +105,16 @@ namespace Chat_Program.Backend
 
 			if (Connected)
 			{
-				TcpClient.GetStream().Write(buffer, 0, buffer.Length);
+				byte[] encryptedBuf = RsaImpl.EncryptRsa(buffer);
+				TcpClient.GetStream().Write(encryptedBuf, 0, encryptedBuf.Length);
+				return true;
 			}
 			else
 			{
 				_data.OnCouldntSendResponse?.Invoke();
 			}
+
+			return false;
 		}
 
 		public int ReadResponse(out byte[] response)
@@ -124,6 +132,9 @@ namespace Chat_Program.Backend
 			{
 				_data.OnUnexpectedDisconnect?.Invoke();
 			}
+
+			Array.Resize(ref response, byteCount);
+			response = RsaImpl.DecryptRsa(response);
 
 			return byteCount;
 		}
