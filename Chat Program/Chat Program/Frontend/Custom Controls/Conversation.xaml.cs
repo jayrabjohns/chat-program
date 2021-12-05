@@ -38,8 +38,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 
 		private void MessagesListBox_Loaded(object sender, RoutedEventArgs e)
 		{
-			if (sender is ListBox listBox
-				&& listBox.ItemsSource is INotifyCollectionChanged itemsSource)
+			if (sender is ListBox listBox && listBox.ItemsSource is INotifyCollectionChanged itemsSource)
 			{
 				itemsSource.CollectionChanged += new NotifyCollectionChangedEventHandler(MessagesListBox_CollectionChanged);
 				ConversationListBox = listBox;
@@ -48,8 +47,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 
 		private void MessageListBox_Unloaded(object sender, RoutedEventArgs e)
 		{
-			if (sender is ListBox listBox
-				&& listBox.ItemsSource is INotifyCollectionChanged itemsSource)
+			if (sender is ListBox listBox && listBox.ItemsSource is INotifyCollectionChanged itemsSource)
 			{
 				itemsSource.CollectionChanged -= new NotifyCollectionChangedEventHandler(MessagesListBox_CollectionChanged);
 				ConversationListBox = null;

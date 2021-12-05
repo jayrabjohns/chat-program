@@ -8,6 +8,7 @@
       xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero2"
       xmlns:Custom_Control="clr-namespace:Chat_Program.Frontend.Custom_Controls"
       
+      x:Name="_chatPage"
       d:DesignHeight="800"
       d:DesignWidth="1300"
       Title="ChatPage">
@@ -485,8 +486,7 @@
                                     <!--Message Send Box-->
                                     <TextBox x:Name="messageSendBox"
                                              Grid.Column="1"
-                                             Text="{Binding SendTextBoxText}"
-                                             TextChanged="SendTextBox_TextChanged"
+                                             Text="{Binding ElementName=_chatPage, Path=SendTextBoxText, UpdateSourceTrigger=PropertyChanged}"
                                              AcceptsReturn="True"
                                              FontSize="16" 
                                              HorizontalAlignment="Stretch"
@@ -497,7 +497,8 @@
                                              Background="Transparent"
                                              Margin="0,0,150,0"
                                              Grid.ColumnSpan="2"
-                                             SpellCheck.IsEnabled="True"/>
+                                             SpellCheck.IsEnabled="True" 
+                                             KeyDown="messageSendBox_KeyDown"/>
 
                                     <!--Placeholder Text-->
                                     <TextBlock Grid.Column="1"

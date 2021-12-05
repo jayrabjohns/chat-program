@@ -40,12 +40,14 @@ namespace Chat_Program.Frontend.Pages
 
 		public ChatPage()
 		{
-			InitializeComponent();
-			this.DataContext = this;
-
 			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(OnReceiveMessage);
 			serverConnectionDialog.Owner = Window.GetWindow(this);
 			serverConnectionDialog.ShowDialog();
+
+			InitializeComponent();
+			this.DataContext = this;
+
+			ChatClient = Model.Globals.CurrentConversation.ChatClient;
 		}
 
 		private void SendMessage(string message)
@@ -53,6 +55,11 @@ namespace Chat_Program.Frontend.Pages
 			if (string.IsNullOrWhiteSpace(message))
 			{
 				return;
+			}
+
+			if (message.EndsWith(Environment.NewLine))
+			{
+				message = message.Substring(0, message.Length - Environment.NewLine.Length);
 			}
 
 			if (ChatClient?.TrySendString(message) ?? false)
@@ -84,41 +91,18 @@ namespace Chat_Program.Frontend.Pages
 		}
 
 		#region Event Handlers
-		private void SendTextBox_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			if (sender is TextBox textBox)
-			{
-				// Force updating value of SendTextBoxText
-				textBox.GetBindingExpression(TextBox.TextProperty).UpdateSource();
-
-				bool minLengthAdded = false;
-
-				// Checking if the changes could plausibly contain a newline
-				foreach (var change in e.Changes)
-				{
-					if (change.AddedLength >= Environment.NewLine.Length)
-					{
-						minLengthAdded = true;
-						break;
-					}
-				}
-
-				// Only send message if enter was pressed
-				if (minLengthAdded && SendTextBoxText.EndsWith(Environment.NewLine))
-				{
-					SendTextBoxText = SendTextBoxText.Substring(0, SendTextBoxText.Length - Environment.NewLine.Length);
-					SendMessage(SendTextBoxText);
-				}
-			}
-		}
-
 		private void SendButton_Click(object sender, RoutedEventArgs e)
 		{
-			if (!string.IsNullOrWhiteSpace(SendTextBoxText))
+			SendMessage(SendTextBoxText);
+		}
+		#endregion
+
+		private void messageSendBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter && !e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftShift))
 			{
 				SendMessage(SendTextBoxText);
 			}
 		}
-		#endregion
 	}
 }
