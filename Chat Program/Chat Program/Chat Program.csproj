@@ -32,10 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Frontend\Dialogs\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Frontend\Assets\attachment.png" />
     <Resource Include="Frontend\Assets\badge.png" />
     <Resource Include="Frontend\Assets\Emoji\muscle.png" />

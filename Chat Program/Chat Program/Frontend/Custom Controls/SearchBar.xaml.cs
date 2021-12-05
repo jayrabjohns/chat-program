@@ -66,7 +66,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 
 		private void searchQuery_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Key == Key.Enter && e.KeyboardDevice.IsKeyDown(Key.LeftShift))
+			if (e.Key == Key.Enter && !e.KeyboardDevice.IsKeyDown(Key.LeftShift))
 			{
 				AcceptQueryAsyncEntry();
 			}
