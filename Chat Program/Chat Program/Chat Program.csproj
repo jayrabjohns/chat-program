@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <RootNamespace>Chat_Program</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Frontend\Assets\attachment.png" />
+    <None Remove="Frontend\Assets\badge.png" />
+    <None Remove="Frontend\Assets\Emoji\muscle.png" />
+    <None Remove="Frontend\Assets\Emoji\ok.png" />
+    <None Remove="Frontend\Assets\Emoji\one.png" />
+    <None Remove="Frontend\Assets\Emoji\pray.png" />
+    <None Remove="Frontend\Assets\Emoji\smile.png" />
+    <None Remove="Frontend\Assets\Emoji\wink.png" />
+    <None Remove="Frontend\Assets\happy.png" />
+    <None Remove="Frontend\Assets\mic.png" />
+    <None Remove="Frontend\Assets\more.png" />
+    <None Remove="Frontend\Assets\moss.JPG" />
+    <None Remove="Frontend\Assets\noimageerror.png" />
+    <None Remove="Frontend\Assets\phone.png" />
+    <None Remove="Frontend\Assets\play.png" />
+    <None Remove="Frontend\Assets\plus.png" />
+    <None Remove="Frontend\Assets\profile1.jpg" />
+    <None Remove="Frontend\Assets\right.png" />
+    <None Remove="Frontend\Assets\search.png" />
+    <None Remove="Frontend\Assets\send.png" />
+    <None Remove="Frontend\Assets\videocall.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Frontend\Dialogs\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Frontend\Assets\attachment.png" />
+    <Resource Include="Frontend\Assets\badge.png" />
+    <Resource Include="Frontend\Assets\Emoji\muscle.png" />
+    <Resource Include="Frontend\Assets\Emoji\ok.png" />
+    <Resource Include="Frontend\Assets\Emoji\one.png" />
+    <Resource Include="Frontend\Assets\Emoji\pray.png" />
+    <Resource Include="Frontend\Assets\Emoji\smile.png" />
+    <Resource Include="Frontend\Assets\Emoji\wink.png" />
+    <Resource Include="Frontend\Assets\happy.png" />
+    <Resource Include="Frontend\Assets\mic.png" />
+    <Resource Include="Frontend\Assets\more.png" />
+    <Resource Include="Frontend\Assets\moss.JPG" />
+    <Resource Include="Frontend\Assets\noimageerror.png" />
+    <Resource Include="Frontend\Assets\phone.png" />
+    <Resource Include="Frontend\Assets\play.png" />
+    <Resource Include="Frontend\Assets\plus.png" />
+    <Resource Include="Frontend\Assets\profile1.jpg">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Frontend\Assets\right.png" />
+    <Resource Include="Frontend\Assets\search.png" />
+    <Resource Include="Frontend\Assets\send.png" />
+    <Resource Include="Frontend\Assets\videocall.png" />
+  </ItemGroup>
+
+</Project>
