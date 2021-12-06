@@ -157,6 +157,7 @@ namespace Chat_Program.Backend
 						Model.IMessage message = DeserialiseMessage(buffer);
 						_data.OnReceiveMessage?.Invoke(message);
 					}
+					Thread.Sleep(100);
 				}
 			});
 			MessageListeningThread.IsBackground = true;
