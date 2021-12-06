@@ -1,12 +1,12 @@
 # End to end encrypted chat program
 This is an ongoing project I sometimes work on in my spare time while studying at the University of Bath.
 
-It features a frontend built in WPF and backend in C#. 
+It features a frontend built with WPF and backend in C#. 
 <hr></hr>
 
 ## Current State
 With the server you can:
-* Have multiple clients connected simultaniously
+* Have multiple clients connected simultaneously
 * Distribute messages to all connected clients
 
 With the client you can:
@@ -26,6 +26,6 @@ Server:
 Client:
 * Decrypt messages from multiple users
 * Send and receive Images & Audio 
-* Persistently store messages accross startups
+* Persistently store messages across startups
 * Stay connected to multiple chat rooms at once
 * Login
