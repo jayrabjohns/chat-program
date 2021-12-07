@@ -100,13 +100,13 @@ namespace Chat_Program.Model
 			ConversationMessages = new ObservableCollection<IConversationMessage>()
 			{
 				new ConversationMessage(
-					"I am on the left and a very long message, so long in fact that it is presisely *this* many characters! WOW it's wrapping, very nice. very very cool!",
+					"This message is on the left and a very long message, so long in fact that it is presisely *this* many characters! WOW it's wrapping, very nice.",
 					"Received",
 					"Yesterday 14:26 PM",
 					Visibility.Collapsed),
 
 				new ConversationMessage(
-					$"This is testing{Environment.NewLine}Newlines!{Environment.NewLine}Wowowow",
+					$"This is testing{Environment.NewLine}Newlines!{Environment.NewLine}Cool!",
 					"Sent",
 					"Yesterday 14:38 PM",
 					Visibility.Collapsed),
@@ -115,13 +115,13 @@ namespace Chat_Program.Model
 					"01:24",
 					"Received",
 					"Yesterday 19:26 PM",
-						Visibility.Visible),
+					Visibility.Visible),
 
 				new ConversationMessage(
 					"Amazing!",
 					"Sent",
 					"Today 06:18 AM",
-						Visibility.Collapsed)
+					Visibility.Collapsed)
 			};
 		}
 	}

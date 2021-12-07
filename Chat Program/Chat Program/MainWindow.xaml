@@ -9,7 +9,7 @@
         
         Title="Chat Program" 
         Height="800" 
-        Width="1300"
+        Width="895"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize"
         WindowStartupLocation="CenterScreen">

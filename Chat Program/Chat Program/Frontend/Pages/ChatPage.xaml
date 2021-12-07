@@ -10,7 +10,7 @@
       
       x:Name="_chatPage"
       d:DesignHeight="800"
-      d:DesignWidth="1300"
+      d:DesignWidth="895"
       Title="ChatPage">
 
     <Page.Resources>
@@ -413,7 +413,7 @@
                                                   HorizontalAlignment="Left" 
                                                   Margin="30,0" 
                                                   ProfileImageSource="..\Assets\profile1.jpg" 
-                                                  IsOnline="False"/>
+                                                  IsOnline="True"/>
 
                     <!--Contact Name-->
                     <TextBlock Grid.Column="1" VerticalAlignment="Center">
