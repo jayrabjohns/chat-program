@@ -1,5 +1,5 @@
 # End to end encrypted chat program
-This is an ongoing project I sometimes work on in my spare time while studying at the University of Bath.
+This is an ongoing project I sometimes work on in my spare time while studying at University.
 
 It features a frontend built with WPF and backend in C#. 
 <hr></hr>
