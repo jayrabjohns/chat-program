@@ -12,10 +12,22 @@ namespace Chat_Server
 
 			// probably use openSSL
 
-			Server server = new Server();
+			int port = 14000;
 
-			Thread newConnectionsThread = new Thread(port => server.ListenForConnections((int)port));
-			newConnectionsThread.Start(5000);
+			// Preprocessing args
+			for (int i = 0; i < args.Length; i++)
+			{
+				if (args[i] == "-p" || args[i] == "--port" && i + 1 < args.Length)
+				{
+					if (int.TryParse(args[i + 1], out int val))
+					{
+						port = val;
+					}
+				}
+			}
+
+			ChatRoom chatRoom = new ChatRoom();
+			chatRoom.ListenForConnections(port);
 		}
 	}
 }

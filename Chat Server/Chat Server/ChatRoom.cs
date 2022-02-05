@@ -11,9 +11,8 @@ namespace Chat_Server
 	/// <summary>
 	/// Deals with receiving / sending responses for clients
 	/// </summary>
-	class Server
+	class ChatRoom
 	{
-		private static object Lock { get; } = new object();
 		private List<Client> Clients { get; } = new List<Client>();
 		private int TotalClientsConnected { get; set; }
 
@@ -72,13 +71,8 @@ namespace Chat_Server
 		private Client LoginClient(TcpClient tcpClient)
 		{
 			Client client;
-			string displayName = $"Client#{TotalClientsConnected}";
-			TotalClientsConnected++;
-
-			lock (Lock)
-			{
-				client = new Client(tcpClient, displayName);
-			}
+			string displayName = $"Client#{TotalClientsConnected++}";
+			client = new Client(tcpClient, displayName);
 
 			return client;
 		}
@@ -133,7 +127,7 @@ namespace Chat_Server
 				includeSender = false;
 			}
 
-			lock (Lock)
+			lock (Clients)
 			{
 				for (int i = Clients.Count - 1; i >= 0; i--)
 				{ 
