@@ -51,6 +51,11 @@ namespace Chat_Program.Backend
 			return RSA.ExportRSAPrivateKey();
 		}
 
+		public byte[] ExportPublicKey()
+		{
+			return RSA.ExportRSAPublicKey();
+		}
+
 		public void SetKeyPair(byte[] keyPair)
 		{
 			RSA.ImportRSAPrivateKey(keyPair, out _);

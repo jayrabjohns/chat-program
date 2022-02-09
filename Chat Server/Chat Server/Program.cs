@@ -5,29 +5,36 @@ namespace Chat_Server
 {
 	class Program
 	{
-		static void Main(string[] args)
+		static int Main(string[] args)
 		{
-			// e2ee with group chats
-			// https://jameshfisher.com/2017/10/25/end-to-end-encryption-with-server-side-fanout/
-
-			// probably use openSSL
-
 			int port = 14000;
 
 			// Preprocessing args
 			for (int i = 0; i < args.Length; i++)
 			{
-				if (args[i] == "-p" || args[i] == "--port" && i + 1 < args.Length)
+				switch (args[i])
 				{
-					if (int.TryParse(args[i + 1], out int val))
-					{
-						port = val;
-					}
+					case "--port":
+					case "-p":
+						if (i + 1 < args.Length && int.TryParse(args[i + 1], out int val))
+						{
+							port = val;
+						}
+						else
+						{
+							Console.WriteLine($"Provide a valid int after '{args[i]}'");
+							return 1;
+						}
+						break;
+					default:
+						ConsoleIO.LogError($"Unrecognised parameter '{args[i]}'.");
+						return 1;
 				}
 			}
 
 			ChatRoom chatRoom = new ChatRoom();
 			chatRoom.ListenForConnections(port);
+			return 0;
 		}
 	}
 }

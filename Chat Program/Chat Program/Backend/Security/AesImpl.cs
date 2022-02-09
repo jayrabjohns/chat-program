@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
 namespace Chat_Server.Security
 {
-	class Cryptography
+	class AesImpl
 	{
 		// Based on https://stackoverflow.com/questions/273452/using-aes-encryption-in-c-sharp
 
@@ -25,7 +24,7 @@ namespace Chat_Server.Security
 				byte[] vectorBytes = new byte[cipher.BlockSize / 16];
 				RNG.GetBytes(vectorBytes);
 
-				// Using PBKDF2 to derive keys
+				// Using PBKDF2 to derive key from password
 				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Data.Settings.Security.Iterations, Data.Settings.Security.HashAlgorithm);
 				byte[] keyBytes = passwordBytes.GetBytes(Data.Settings.Security.KeySize / 8);
 

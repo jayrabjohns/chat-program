@@ -1,6 +1,3 @@
-﻿Client -login request> Server
-Server -ask username & pw> Client
-Client -send username & pw> Server
-Server -validate login details
-		if valid, create new session id for client
-		if not, re-ask
+﻿Users need a symmetric key to read group chat messages (i.e. join). When invited ot teh group, they will be sent the key, as well as group chat info.
+Technically groupchat info (address, etc) isn't private, but the frontend just wont give you an option to join arbitrary groups, unless they're public.
+Instead you can create and invite.
