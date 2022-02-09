@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Chat_Server.Security
+namespace Chat_Program.Security
 {
 	class AesImpl
 	{
