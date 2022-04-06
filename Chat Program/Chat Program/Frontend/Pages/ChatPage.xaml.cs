@@ -29,15 +29,6 @@ namespace Chat_Program.Frontend.Pages
 
 		private ChatClient ChatClient { get; }
 
-		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		public void OnPropertyChanged(string propertyName)
-		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
-		#endregion
-
 		public ChatPage()
 		{
 			// OnReceiveMessage needs to be called from the UI thread
@@ -62,9 +53,13 @@ namespace Chat_Program.Frontend.Pages
 				return;
 			}
 
-			if (message.EndsWith(Environment.NewLine))
+			if (message.EndsWith("\r\n"))
 			{
-				message = message.Substring(0, message.Length - Environment.NewLine.Length);
+				message = message.Substring(0, message.Length - 2);
+			}
+			else if (message.EndsWith('\n'))
+			{
+				message = message.Substring(0, message.Length - 1);
 			}
 
 			if (ChatClient?.TrySendString(message) ?? false)
@@ -106,6 +101,15 @@ namespace Chat_Program.Frontend.Pages
 			{
 				SendMessage(SendTextBoxText);
 			}
+		}
+		#endregion
+
+		#region INotifyPropertyChanged
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public void OnPropertyChanged(string propertyName)
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 		#endregion
 	}
