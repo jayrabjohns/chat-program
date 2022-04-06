@@ -14,25 +14,37 @@ namespace Chat_Server
 	class ChatRoom
 	{
 		private List<Client> Clients { get; } = new List<Client>();
-		private int TotalClientsConnected { get; set; }
+		private ulong TotalClientsConnected { get; set; }
 
 		public void ListenForConnections(int port)
 		{
 			TcpListener tcpListener = new TcpListener(IPAddress.Any, port);
-			tcpListener.Start();
-
-			ConsoleIO.Log($"Listening for new connections...{Environment.NewLine}");
 			try
 			{
+				tcpListener.Start();
+				ConsoleIO.Log($"Listening for new connections...{Environment.NewLine}");
+
 				while (true)
 				{
+					if (TotalClientsConnected >= ulong.MaxValue)
+					{
+						ConsoleIO.Log("No longer accepting new connections, max number has been reach.");
+						//TODO: Unsure what to do here?
+					}
+
 					// Blocks thread until new connection found
 					TcpClient newTcpClient = tcpListener.AcceptTcpClient();
 					ConsoleIO.Log($"{newTcpClient.Client.RemoteEndPoint} is connecting...");
 
 					Thread newClientThread = new Thread(tcpClient => OnNewConection((TcpClient)tcpClient));
 					newClientThread.Start(newTcpClient);
+
+					Thread.Sleep(200);
 				}
+			}
+			catch (SocketException e)
+			{
+				ConsoleIO.LogError(e.Message);
 			}
 			catch (Exception e)
 			{
@@ -43,8 +55,13 @@ namespace Chat_Server
 		private void OnNewConection(TcpClient tcpClient)
 		{
 			Client client = LoginClient(tcpClient);
-			Clients.Add(client);
-			ConsoleIO.Log($"{tcpClient.Client.RemoteEndPoint} conencted as \"{client.DisplayName}.\"");
+
+			lock (Clients)
+			{
+				Clients.Add(client);
+			}
+
+			ConsoleIO.Log($"{tcpClient.Client.RemoteEndPoint} connected as \"{client.DisplayName}.\"");
 
 			ListenForMessages(client);
 		}
@@ -79,7 +96,7 @@ namespace Chat_Server
 
 		private void ListenForMessages(Client client)
 		{
-			// TODO: re design to use Async/await instead. It's dangerous to be able to call this fucntion and effectively be stuck for ever.
+			// TODO: re-design to use TCS instead.
 
 			NetworkStream stream = client.TcpClient.GetStream();
 

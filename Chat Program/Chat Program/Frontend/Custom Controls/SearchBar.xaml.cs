@@ -54,6 +54,14 @@ namespace Chat_Program.Frontend.Custom_Controls
 			this.DataContext = this;
 		}
 
+		private async void AcceptQueryAsyncEntry()
+		{
+			if (OnSearch != null)
+			{
+				await OnSearch(SearchQueryText);
+			}
+		}
+
 		#region INotifyPropertyChanged
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -63,14 +71,7 @@ namespace Chat_Program.Frontend.Custom_Controls
 		}
 		#endregion
 
-		private async void AcceptQueryAsyncEntry()
-		{
-			if (OnSearch != null)
-			{
-				await OnSearch(SearchQueryText);
-			}
-		}
-
+		#region Event Handlers
 		private void searchQuery_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.Key == Key.Enter && !e.KeyboardDevice.IsKeyDown(Key.LeftShift) || e.Key == Key.Tab)
@@ -78,5 +79,6 @@ namespace Chat_Program.Frontend.Custom_Controls
 				AcceptQueryAsyncEntry();
 			}
 		}
+		#endregion
 	}
 }

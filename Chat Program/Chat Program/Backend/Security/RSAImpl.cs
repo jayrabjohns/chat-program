@@ -12,7 +12,7 @@ namespace Chat_Program.Backend
 		private RSA RSA { get; }
 		private RNGCryptoServiceProvider RNG { get; }
 
-		public RsaImpl(int keySize = 4096)
+		public RsaImpl(int keySize)
 		{
 			RSA = RSA.Create(keySize);
 			PrivateKey = RSA.ExportParameters(true);

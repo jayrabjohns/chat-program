@@ -4,14 +4,28 @@ namespace Chat_Program.Model
 {
 	class Settings
 	{
-		public static Security Security { get; }
+		public static Network Network { get; } = new Network();
+		public static Aes Aes { get; } = new Aes();
+		public static Rsa Rsa { get; } = new Rsa();
 	}
 
-	class Security
+	class Network
+	{
+		public int ResponseSizeBytes { get; } = 1024;
+		public int MaxConnectionAttempts { get; } = 5;
+		public int ConnectionRetryDelayMs { get; } = 1000;
+	}
+
+	class Aes
 	{
 		public int Iterations { get; } = 2048;
-		public int KeySize = 256;
-		public HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA1;
-		public CipherMode CipherMode = CipherMode.CBC;
+		public int KeySize { get; } = 256;
+		public HashAlgorithmName HashAlgorithm { get; } = HashAlgorithmName.SHA1;
+		public CipherMode CipherMode { get; } = CipherMode.CBC;
+	}
+
+	class Rsa
+	{
+		public int KeySize { get; } = 4096;
 	}
 }

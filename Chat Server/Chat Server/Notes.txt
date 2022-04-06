@@ -1,3 +1,7 @@
+e2ee with group chats
+https://jameshfisher.com/2017/10/25/end-to-end-encryption-with-server-side-fanout/
+
 ﻿Users need a symmetric key to read group chat messages (i.e. join). When invited ot teh group, they will be sent the key, as well as group chat info.
 Technically groupchat info (address, etc) isn't private, but the frontend just wont give you an option to join arbitrary groups, unless they're public.
+Instead you can create and invite.
 Instead you can create and invite.

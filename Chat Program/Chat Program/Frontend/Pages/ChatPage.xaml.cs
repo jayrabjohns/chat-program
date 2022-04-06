@@ -41,7 +41,11 @@ namespace Chat_Program.Frontend.Pages
 		public ChatPage()
 		{
 			// OnReceiveMessage needs to be called from the UI thread
-			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog((message) => App.Current.Dispatcher.Invoke(() => OnReceiveMessage(message)));
+			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(
+				(message) => Application.Current.Dispatcher.Invoke(() => OnReceiveMessage(message)),
+				Model.Settings.Network.MaxConnectionAttempts, 
+				Model.Settings.Network.ConnectionRetryDelayMs);
+
 			serverConnectionDialog.Owner = Window.GetWindow(this);
 			serverConnectionDialog.ShowDialog();
 
@@ -96,8 +100,6 @@ namespace Chat_Program.Frontend.Pages
 		{
 			SendMessage(SendTextBoxText);
 		}
-		#endregion
-
 		private void messageSendBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			if (e.Key == System.Windows.Input.Key.Enter && !e.KeyboardDevice.IsKeyDown(System.Windows.Input.Key.LeftShift))
@@ -105,5 +107,6 @@ namespace Chat_Program.Frontend.Pages
 				SendMessage(SendTextBoxText);
 			}
 		}
+		#endregion
 	}
 }

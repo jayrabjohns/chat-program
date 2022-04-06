@@ -40,15 +40,6 @@ namespace Chat_Program.Model
 		int ListItemHeight { get; set; }
 	}
 
-	public interface IChatClient
-	{
-		int MaxResponseBytes { get; }
-		Action<IMessage> OnReceiveMessage { get; }
-		Action OnCouldntConnect { get; }
-		Action OnUnexpectedDisconnect { get; }
-		Action OnCouldntSendResponse { get; }
-	}
-
 	public interface IConversation
 	{
 		Backend.ChatClient ChatClient { get; }

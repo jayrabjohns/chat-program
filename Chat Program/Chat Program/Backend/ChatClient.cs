@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chat_Program.Model;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -18,13 +19,22 @@ namespace Chat_Program.Backend
 		private Thread MessageListeningThread { get; set; }
 		private RsaImpl RsaImpl { get; }
 		private string KeyPairPath { get => @"..\Model\Keys\keyPair"; }
-		private Model.ChatClient _data { get; }
+		private int MaxResponseBytes { get; }
+		private Action<IMessage> OnReceiveMessage { get; }
+		private Action OnCouldntConnect { get; }
+		private Action OnUnexpectedDisconnect { get; }
+		private Action OnCouldntSendResponse { get; }
 
-		public ChatClient(int maxResponseBytes = 1024, Action<Model.IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
+		public ChatClient(int maxResponseBytes, Action<Model.IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
 		{
-			_data = new Model.ChatClient(maxResponseBytes, onReceiveMessage, onCouldntConnect, onUnexpectedDisconnect, onCouldntSendResponse);
+			MaxResponseBytes = maxResponseBytes;
+			OnReceiveMessage = onReceiveMessage;
+			OnCouldntConnect = onCouldntConnect;
+			OnUnexpectedDisconnect = onUnexpectedDisconnect;
+			OnCouldntSendResponse = onCouldntSendResponse;
+
 			TcpClient = new TcpClient();
-			RsaImpl = new RsaImpl(4096);
+			RsaImpl = new RsaImpl(Model.Settings.Rsa.KeySize);
 			//byte[] keyPair = File.ReadAllBytes(KeyPairPath);
 			//RsaImpl.SetKeyPair(keyPair);
 		}
@@ -41,7 +51,7 @@ namespace Chat_Program.Backend
 				}
 				catch (System.Net.Sockets.SocketException e)
 				{
-					_data.OnCouldntConnect?.Invoke();
+					OnCouldntConnect?.Invoke();
 				}
 			}
 
@@ -76,7 +86,7 @@ namespace Chat_Program.Backend
 		#region Sending / Receiving Data
 		public bool TrySendString(string str)
 		{
-			Model.Message message = new Model.Message(str);
+			Message message = new Message(str);
 			byte[] buffer = SerialiseMessage(message);
 
 			if (buffer.Length > 0)
@@ -98,9 +108,9 @@ namespace Chat_Program.Backend
 				return false;
 			}
 
-			if (buffer.Length > _data.MaxResponseBytes)
+			if (buffer.Length > MaxResponseBytes)
 			{
-				Array.Resize(ref buffer, _data.MaxResponseBytes);
+				Array.Resize(ref buffer, MaxResponseBytes);
 			}
 
 			if (Connected)
@@ -111,15 +121,15 @@ namespace Chat_Program.Backend
 			}
 			else
 			{
-				_data.OnCouldntSendResponse?.Invoke();
+				OnCouldntSendResponse?.Invoke();
 			}
 
 			return false;
 		}
 
-		public int ReadResponse(out byte[] response)
+		public int ReadAndDecryptResponse(out byte[] response)
 		{
-			response = new byte[_data.MaxResponseBytes];
+			response = new byte[MaxResponseBytes];
 			int byteCount = 0;
 
 			try
@@ -130,7 +140,7 @@ namespace Chat_Program.Backend
 			(e is System.IO.IOException
 			|| e is System.InvalidOperationException)
 			{
-				_data.OnUnexpectedDisconnect?.Invoke();
+				OnUnexpectedDisconnect?.Invoke();
 			}
 
 			Array.Resize(ref response, byteCount);
@@ -143,7 +153,6 @@ namespace Chat_Program.Backend
 		{
 			if (Listening)
 			{
-				// Already listening
 				return;
 			}
 
@@ -152,10 +161,10 @@ namespace Chat_Program.Backend
 			{
 				while (Listening)
 				{
-					if (ReadResponse(out byte[] buffer) > 0)
+					if (ReadAndDecryptResponse(out byte[] buffer) > 0)
 					{
-						Model.IMessage message = DeserialiseMessage(buffer);
-						_data.OnReceiveMessage?.Invoke(message);
+						IMessage message = DeserialiseMessage(buffer);
+						OnReceiveMessage?.Invoke(message);
 					}
 					Thread.Sleep(100);
 				}
@@ -171,9 +180,9 @@ namespace Chat_Program.Backend
 		#endregion
 
 		#region Serialising / Deserialising Messages
-		private byte[] SerialiseMessage(Model.IMessage message)
+		private byte[] SerialiseMessage(IMessage message)
 		{
-			if (sizeof(byte) + sizeof(int) + sizeof(char) * message.Content.Length > _data.MaxResponseBytes)
+			if (sizeof(byte) + sizeof(int) + sizeof(char) * message.Content.Length > MaxResponseBytes)
 			{
 				// Message exceeds max response bytes
 				return new byte[0];
@@ -200,15 +209,15 @@ namespace Chat_Program.Backend
 				{
 					try
 					{
-						Model.ResponseType responseType = (Model.ResponseType)bReader.ReadByte();
+						ResponseType responseType = (ResponseType)bReader.ReadByte();
 						int contentSize = bReader.ReadInt32();
 						byte[] content = bReader.ReadBytes(contentSize);
 
-						return new Model.Message(content, responseType);
+						return new Message(content, responseType);
 					}
 					catch (System.IO.EndOfStreamException)
 					{
-						return new Model.Message("Message too large.");
+						return new Message("Message too large.");
 					}
 				}
 			}

@@ -125,22 +125,4 @@ namespace Chat_Program.Model
 			};
 		}
 	}
-
-	public class ChatClient : IChatClient
-	{
-		public int MaxResponseBytes { get; }
-		public Action<IMessage> OnReceiveMessage { get; }
-		public Action OnCouldntConnect { get; }
-		public Action OnUnexpectedDisconnect { get; }
-		public Action OnCouldntSendResponse { get; }
-
-		public ChatClient(int maxResponseBytes = 1024, Action<IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
-		{
-			MaxResponseBytes = maxResponseBytes;
-			OnReceiveMessage = onReceiveMessage;
-			OnCouldntConnect = onCouldntConnect;
-			OnUnexpectedDisconnect = onUnexpectedDisconnect;
-			OnCouldntSendResponse = onCouldntSendResponse;
-		}
-	}
 }

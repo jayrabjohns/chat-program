@@ -19,8 +19,7 @@ namespace Chat_Program.Model
 				{
 					var path = System.Reflection.Assembly.GetEntryAssembly().Location;
 					var directory = System.IO.Path.GetDirectoryName(path);
-					_projectRootFolder = directory.Replace(@"\bin\Debug", string.Empty);
-					_projectRootFolder = _projectRootFolder.Replace(@"\net5.0", string.Empty);
+					_projectRootFolder = directory.Replace(@"\bin\Debug", string.Empty).Replace(@"\net5.0", string.Empty);
 				}
 
 				return _projectRootFolder;

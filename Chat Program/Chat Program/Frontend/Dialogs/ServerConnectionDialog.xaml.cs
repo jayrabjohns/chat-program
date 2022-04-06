@@ -1,7 +1,6 @@
 ﻿using Chat_Program.Backend;
 using System;
 using System.ComponentModel;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -31,7 +30,7 @@ namespace Chat_Program.Frontend.Dialogs
 
 		private Action<Model.IMessage> OnReceiveMessage { get; }
 
-		public ServerConnectionDialog(Action<Model.IMessage> onReceiveMessage = null, int connectionAttempts = 5, int connectionRetryDelay = 1000)
+		public ServerConnectionDialog(Action<Model.IMessage> onReceiveMessage, int connectionAttempts, int connectionRetryDelay)
 		{
 			OnReceiveMessage = onReceiveMessage;
 			ConnectionAttempts = connectionAttempts;
@@ -52,7 +51,7 @@ namespace Chat_Program.Frontend.Dialogs
 
 		private async Task TryConnectAsync(string address)
 		{
-			ChatClient chatClient = new ChatClient(1024, OnReceiveMessage);
+			ChatClient chatClient = new ChatClient(Model.Settings.Network.ResponseSizeBytes, OnReceiveMessage);
 			bool connected = false;
 
 			for (int i = 0; i < ConnectionAttempts; i++)

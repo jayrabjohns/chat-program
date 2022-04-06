@@ -419,7 +419,7 @@
                     <TextBlock Grid.Column="1" VerticalAlignment="Center">
                         <Run Text="Jay Test" FontWeight="Bold" FontSize="17"/>
                         <LineBreak/>
-                        <Run Text="Offline" FontSize="14" Foreground="#B7B5B8"/>
+                        <Run Text="Online" FontSize="14" Foreground="#B7B5B8"/>
                         <Run Text=" • " FontWeight="ExtraBold" FontSize="19" Foreground="#B7B5B8"/>
                         <Run Text="Last seen 3 hours ago" FontSize="14" Foreground="#B7B5B8"/>
                     </TextBlock>
