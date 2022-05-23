@@ -13,25 +13,25 @@ namespace Chat_Program.Backend
 	public class ChatClient
 	{
 		public TcpClient TcpClient { get; }
-		public bool Connected { get => TcpClient.Connected; }
-		public bool Listening { get; private set; } = false;
+		public bool IsConnected { get => TcpClient.Connected; }
+		public bool IsListening { get; private set; } = false;
 
 		private Thread MessageListeningThread { get; set; }
 		private RsaImpl RsaImpl { get; }
 		private string KeyPairPath { get => @"..\Model\Keys\keyPair"; }
 		private int MaxResponseBytes { get; }
 		private Action<IMessage> OnReceiveMessage { get; }
-		private Action OnCouldntConnect { get; }
-		private Action OnUnexpectedDisconnect { get; }
-		private Action OnCouldntSendResponse { get; }
+		private Action<Exception> OnCouldntConnect { get; }
+		private Action<Exception> OnUnexpectedDisconnect { get; }
+		private Action<Exception> OnCouldntSendResponse { get; }
 
-		public ChatClient(int maxResponseBytes, Action<Model.IMessage> onReceiveMessage = null, Action onCouldntConnect = null, Action onUnexpectedDisconnect = null, Action onCouldntSendResponse = null)
+		public ChatClient(int maxResponseBytes, Action<Model.IMessage> onReceiveMessage, Action<Exception> onCouldntConnect, Action<Exception> onUnexpectedDisconnect, Action<Exception> onCouldntSendResponse)
 		{
 			MaxResponseBytes = maxResponseBytes;
-			OnReceiveMessage = onReceiveMessage;
-			OnCouldntConnect = onCouldntConnect;
-			OnUnexpectedDisconnect = onUnexpectedDisconnect;
-			OnCouldntSendResponse = onCouldntSendResponse;
+			OnReceiveMessage = onReceiveMessage ?? throw new ArgumentNullException(nameof(onReceiveMessage));
+			OnCouldntConnect = onCouldntConnect ?? Exceptions.DefaultAction;
+			OnUnexpectedDisconnect = onUnexpectedDisconnect ?? Exceptions.DefaultAction;
+			OnCouldntSendResponse = onCouldntSendResponse ?? Exceptions.DefaultAction;
 
 			TcpClient = new TcpClient();
 			RsaImpl = new RsaImpl(Model.Settings.Rsa.KeySize);
@@ -42,7 +42,7 @@ namespace Chat_Program.Backend
 		#region Connect / Disconnect
 		public bool TryConnect(IPAddress ipAddress, int port)
 		{
-			if (!Connected)
+			if (!IsConnected)
 			{
 				try
 				{
@@ -51,7 +51,7 @@ namespace Chat_Program.Backend
 				}
 				catch (System.Net.Sockets.SocketException e)
 				{
-					OnCouldntConnect?.Invoke();
+					OnCouldntConnect.Invoke(e);
 				}
 			}
 
@@ -75,7 +75,7 @@ namespace Chat_Program.Backend
 
 		public void Disconnect()
 		{
-			if (Connected)
+			if (IsConnected)
 			{
 				TcpClient.GetStream().Close();
 				TcpClient.Close();
@@ -113,15 +113,22 @@ namespace Chat_Program.Backend
 				Array.Resize(ref buffer, MaxResponseBytes);
 			}
 
-			if (Connected)
+			if (IsConnected)
 			{
 				byte[] encryptedBuf = RsaImpl.EncryptRsa(buffer);
-				TcpClient.GetStream().Write(encryptedBuf, 0, encryptedBuf.Length);
+				try
+				{
+					TcpClient.GetStream().Write(encryptedBuf, 0, encryptedBuf.Length);
+				}
+				catch (System.IO.IOException e)
+				{
+					OnCouldntSendResponse.Invoke(e);
+				}
 				return true;
 			}
 			else
 			{
-				OnCouldntSendResponse?.Invoke();
+				OnCouldntSendResponse.Invoke(new NotConnectedException(TcpClient));
 			}
 
 			return false;
@@ -140,7 +147,7 @@ namespace Chat_Program.Backend
 			(e is System.IO.IOException
 			|| e is System.InvalidOperationException)
 			{
-				OnUnexpectedDisconnect?.Invoke();
+				OnUnexpectedDisconnect.Invoke(e);
 			}
 
 			Array.Resize(ref response, byteCount);
@@ -151,22 +158,23 @@ namespace Chat_Program.Backend
 
 		public void StartListeningForMessages()
 		{
-			if (Listening)
+			if (IsListening)
 			{
 				return;
 			}
 
-			Listening = true;
+			IsListening = true;
 			MessageListeningThread = new Thread(() =>
 			{
-				while (Listening)
+				while (IsListening)
 				{
 					if (ReadAndDecryptResponse(out byte[] buffer) > 0)
 					{
 						IMessage message = DeserialiseMessage(buffer);
-						OnReceiveMessage?.Invoke(message);
+						OnReceiveMessage.Invoke(message);
 					}
-					Thread.Sleep(100);
+
+					Thread.Sleep(Model.Settings.Network.ReadMessageRetryDelayMs);
 				}
 			});
 			MessageListeningThread.IsBackground = true;
@@ -175,7 +183,7 @@ namespace Chat_Program.Backend
 
 		public void StopListeningForMessages()
 		{
-			Listening = false;
+			IsListening = false;
 		}
 		#endregion
 

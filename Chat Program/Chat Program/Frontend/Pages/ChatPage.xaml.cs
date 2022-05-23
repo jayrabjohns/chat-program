@@ -31,19 +31,42 @@ namespace Chat_Program.Frontend.Pages
 
 		public ChatPage()
 		{
-			// OnReceiveMessage needs to be called from the UI thread
-			ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(
-				(message) => Application.Current.Dispatcher.Invoke(() => OnReceiveMessage(message)),
-				Model.Settings.Network.MaxConnectionAttempts, 
-				Model.Settings.Network.ConnectionRetryDelayMs);
+			ChatClient = new ChatClient(
+				maxResponseBytes: Model.Settings.Network.ResponseSizeBytes,
+				onReceiveMessage: (message) => Application.Current.Dispatcher.Invoke(() => OnReceiveMessage(message)), // OnReceiveMessage needs to be called from the UI thread
+				onCouldntConnect: null,
+				onUnexpectedDisconnect: null,
+				onCouldntSendResponse:	null);
 
-			serverConnectionDialog.Owner = Window.GetWindow(this);
-			serverConnectionDialog.ShowDialog();
+			Action<ChatClient> onConnectionSuccess = (ChatClient chatClient) =>
+			{
+				Model.Globals.Conversations.Add(new Model.Conversation(chatClient));
+				chatClient.StartListeningForMessages();
+			};
+
+#if DEBUG
+			// Try to skip server connection dialog when in debug
+			if (ChatClient.TryConnect("localhost", 14000))
+			{
+				onConnectionSuccess.Invoke(ChatClient);
+			}
+			else
+#endif
+			{
+				ServerConnectionDialog serverConnectionDialog = new ServerConnectionDialog(
+					ChatClient,
+					Model.Settings.Network.MaxConnectionAttempts,
+					Model.Settings.Network.ConnectionRetryDelayMs,
+					null,
+					onConnectionSuccess
+					);
+
+				serverConnectionDialog.Owner = Window.GetWindow(this);
+				serverConnectionDialog.ShowDialog();
+			}
 
 			InitializeComponent();
 			this.DataContext = this;
-
-			ChatClient = Model.Globals.CurrentConversation.ChatClient;
 		}
 
 		private void SendMessage(string message)

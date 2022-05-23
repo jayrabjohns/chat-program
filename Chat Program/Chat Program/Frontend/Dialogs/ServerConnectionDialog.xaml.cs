@@ -27,14 +27,17 @@ namespace Chat_Program.Frontend.Dialogs
 
 		private int ConnectionAttempts { get; }
 		private int ConnectionRetryDelay { get; }
+		private Backend.ChatClient ChatClient { get; }
+		private Action<Exception> OnConnectionFailed { get; }
+		private Action<ChatClient> OnConnectionSuccess { get; }
 
-		private Action<Model.IMessage> OnReceiveMessage { get; }
-
-		public ServerConnectionDialog(Action<Model.IMessage> onReceiveMessage, int connectionAttempts, int connectionRetryDelay)
+		public ServerConnectionDialog(Backend.ChatClient chatClient, int connectionAttempts, int connectionRetryDelay, Action<Exception> onConnectionFailed, Action<ChatClient> onConnectionSuccess)
 		{
-			OnReceiveMessage = onReceiveMessage;
+			ChatClient = chatClient ?? throw new ArgumentNullException(nameof(ChatClient));
 			ConnectionAttempts = connectionAttempts;
 			ConnectionRetryDelay = connectionRetryDelay;
+			OnConnectionFailed = onConnectionFailed ?? Exceptions.DefaultAction;
+			OnConnectionSuccess = onConnectionSuccess ?? throw new ArgumentNullException(nameof(onConnectionSuccess));
 
 			InitializeComponent();
 			this.DataContext = this;
@@ -51,26 +54,27 @@ namespace Chat_Program.Frontend.Dialogs
 
 		private async Task TryConnectAsync(string address)
 		{
-			ChatClient chatClient = new ChatClient(Model.Settings.Network.ResponseSizeBytes, OnReceiveMessage);
-			bool connected = false;
+			bool success = false;
 
 			for (int i = 0; i < ConnectionAttempts; i++)
 			{
-				if (int.TryParse(PortString, out int port) && chatClient.TryConnect(address, port))
+				if (int.TryParse(PortString, out int port) && ChatClient.TryConnect(address, port))
 				{
-					connected = true;
+					success = true;
 					break;
 				}
 
 				await Task.Delay(ConnectionRetryDelay);
 			}
 
-			if (connected)
+			if (!success)
 			{
-				Model.Globals.Conversations.Add(new Model.Conversation(chatClient));
-				chatClient.StartListeningForMessages();
-				this.Close();
+				OnConnectionFailed.Invoke(new System.Net.Sockets.SocketException((int)System.Net.Sockets.SocketError.TimedOut));
+				return;
 			}
+
+			OnConnectionSuccess.Invoke(ChatClient);
+			this.Close();
 		}
 
 		private Task SetPort(string portString)

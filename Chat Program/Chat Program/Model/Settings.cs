@@ -14,6 +14,7 @@ namespace Chat_Program.Model
 		public int ResponseSizeBytes { get; } = 1024;
 		public int MaxConnectionAttempts { get; } = 5;
 		public int ConnectionRetryDelayMs { get; } = 1000;
+		public int ReadMessageRetryDelayMs { get; } = 100;
 	}
 
 	class Aes
