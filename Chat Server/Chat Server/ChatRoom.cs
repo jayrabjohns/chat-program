@@ -8,6 +8,15 @@ using System.Threading;
 
 namespace Chat_Server
 {
+	public enum ChatRoomState
+	{
+		UnInitialised = 0,
+		Initialising = 1,
+		Running = 2,
+		Stopping = 3,
+		Stopped = 4,
+	}
+
 	/// <summary>
 	/// Deals with receiving / sending responses for clients
 	/// </summary>
@@ -15,7 +24,67 @@ namespace Chat_Server
 	{
 		private List<Client> Clients { get; } = new List<Client>();
 		private ulong TotalClientsConnected { get; set; }
+		private object CurrentStateLock { get; } = new object();
 
+		private ChatRoomState _currentChatRoomState = ChatRoomState.UnInitialised;
+		private ChatRoomState CurrentState 
+		{
+			get 
+			{ 
+				lock (CurrentStateLock)
+				{
+					return _currentChatRoomState;
+				}
+			}
+			set 
+			{
+				lock (CurrentStateLock)
+				{
+					_currentChatRoomState = value;
+				}
+			}
+		}
+
+		public ChatRoom()
+		{
+
+		}
+
+		#region Start / Stop
+		public void Start(int port)
+		{
+			CurrentState = ChatRoomState.Initialising;
+
+			Thread connectionListeningThread = new Thread(() => ListenForConnections(port));
+			connectionListeningThread.Start();
+
+			CurrentState = ChatRoomState.Running;
+
+			bool running = true;
+			while (running)
+			{
+				if (CurrentState == ChatRoomState.Stopping)
+				{
+					running = false;
+				}
+				else
+				{
+					Thread.Sleep(Data.Settings.ChatRoom.HeartBeatFrequencyMs);
+					CheckClientConnections();
+				}
+			}
+
+			CurrentState = ChatRoomState.Stopped;
+		}
+
+		public void RequestStop()
+		{
+			CurrentState = ChatRoomState.Stopping;
+		}
+		#endregion
+
+
+		#region Connections
 		public void ListenForConnections(int port)
 		{
 			TcpListener tcpListener = new TcpListener(IPAddress.Any, port);
@@ -30,6 +99,7 @@ namespace Chat_Server
 					{
 						ConsoleIO.Log("No longer accepting new connections, max number has been reach.");
 						//TODO: Unsure what to do here?
+						continue;
 					}
 
 					// Blocks thread until new connection found
@@ -39,7 +109,7 @@ namespace Chat_Server
 					Thread newClientThread = new Thread(tcpClient => OnNewConection((TcpClient)tcpClient));
 					newClientThread.Start(newTcpClient);
 
-					Thread.Sleep(200);
+					Thread.Sleep(Data.Settings.ChatRoom.NewConnectionsDelayMs);
 				}
 			}
 			catch (SocketException e)
@@ -85,6 +155,21 @@ namespace Chat_Server
 			}
 		}
 
+		private void CheckClientConnections()
+		{
+			lock(Clients)
+			{
+				for (int i = Clients.Count - 1; i >= 0; i--)
+				{
+					if (!Clients[i].TcpClient.Connected)
+					{
+						DisconnectClient(Clients[i]);
+					}
+				}
+			}
+		}
+		#endregion
+
 		private Client LoginClient(TcpClient tcpClient)
 		{
 			Client client;
@@ -99,15 +184,15 @@ namespace Chat_Server
 			// TODO: re-design to use TCS instead.
 
 			NetworkStream stream = client.TcpClient.GetStream();
+			byte[] receiveBuffer = new byte[Data.Settings.ChatRoom.DefaultReceiveBufferSize];
 
 			while (true)
 			{
-				byte[] receiveBuffer = new byte[1024];
-
 				try
 				{
 					int numBytes = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
 					SendResponseToAllClients(receiveBuffer, numBytes, client, true);
+					Array.Clear(receiveBuffer, 0, numBytes);
 				}
 				catch (IOException)
 				{

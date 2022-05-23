@@ -15,5 +15,10 @@ namespace Chat_Server
 			TcpClient = tcpClient;
 			DisplayName = displayName;
 		}
+
+		public override string ToString()
+		{
+			return DisplayName;
+		}
 	}
 }

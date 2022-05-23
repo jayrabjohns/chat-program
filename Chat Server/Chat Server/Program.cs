@@ -17,7 +17,7 @@ namespace Chat_Server
 			}
 
 			ChatRoom chatRoom = new ChatRoom();
-			chatRoom.ListenForConnections(Port);
+			chatRoom.Start(Port);
 
 			return 0;
 		}

@@ -7,6 +7,8 @@ namespace Chat_Server.Data
 {
 	class ChatRoom
 	{
+		public int NewConnectionsDelayMs { get; } = 200;
+		public int HeartBeatFrequencyMs { get; } = 5000; // TODO: Change this to vary based on chatroom usage
 		public int DefaultReceiveBufferSize { get; } = 1024;
 	}
 
