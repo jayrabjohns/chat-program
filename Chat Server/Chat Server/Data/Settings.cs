@@ -5,16 +5,13 @@ using System.Security.Cryptography;
 
 namespace Chat_Server.Data
 {
-	class Security
+	class ChatRoom
 	{
-		public int Iterations { get; } = 2048;
-		public int KeySize = 256;
-		public HashAlgorithmName HashAlgorithm = HashAlgorithmName.SHA1;
-		public CipherMode CipherMode = CipherMode.CBC;
+		public int DefaultReceiveBufferSize { get; } = 1024;
 	}
 
 	class Settings
 	{
-		public static Security Security { get; }
+		public static ChatRoom ChatRoom { get; } = new ChatRoom();
 	}
 }
