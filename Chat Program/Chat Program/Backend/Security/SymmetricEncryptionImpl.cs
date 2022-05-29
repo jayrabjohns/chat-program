@@ -25,7 +25,7 @@ namespace Chat_Program.Backend.Security
 				RNG.GetBytes(vectorBytes);
 
 				// Using PBKDF2 to derive key from password
-				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Aes.Iterations, Model.Settings.Aes.HashAlgorithm);
+				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Aes.KeyIterations, Model.Settings.Aes.KeyPRF);
 				byte[] keyBytes = passwordBytes.GetBytes(Model.Settings.Aes.KeySize / 8);
 
 				cipher.Mode = Model.Settings.Aes.CipherMode;
@@ -64,7 +64,7 @@ namespace Chat_Program.Backend.Security
 
 			using (T cipher = new T())
 			{
-				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Aes.Iterations, Model.Settings.Aes.HashAlgorithm);
+				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Aes.KeyIterations, Model.Settings.Aes.KeyPRF);
 				byte[] keyBytes = passwordBytes.GetBytes(Model.Settings.Aes.KeySize / 8);
 
 				cipher.Mode = Model.Settings.Aes.CipherMode;
