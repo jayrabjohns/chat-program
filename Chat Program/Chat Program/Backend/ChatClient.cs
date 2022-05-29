@@ -1,4 +1,5 @@
-﻿using Chat_Program.Model;
+﻿using Chat_Program.Backend.Security;
+using Chat_Program.Model;
 using System;
 using System.IO;
 using System.Net;
@@ -7,6 +8,17 @@ using System.Threading;
 
 namespace Chat_Program.Backend
 {
+	public enum ServerRequest : byte
+	{
+		RedistributeMessage = 0,
+	}
+
+	public enum ServerContext : byte
+	{
+		Message = 0,
+		KeyRequest = 1,
+	}
+
 	/// <summary>
 	/// Handles sending / recieving of messages with a given server
 	/// </summary>
@@ -18,8 +30,10 @@ namespace Chat_Program.Backend
 
 		private Thread MessageListeningThread { get; set; }
 		private RsaImpl RsaImpl { get; }
+		private SymmetricEncryptionImpl AesImpl { get; }
 		private string KeyPairPath { get => @"..\Model\Keys\keyPair"; }
 		private int MaxResponseBytes { get; }
+
 		private Action<IMessage> OnReceiveMessage { get; }
 		private Action<Exception> OnCouldntConnect { get; }
 		private Action<Exception> OnUnexpectedDisconnect { get; }
@@ -34,7 +48,10 @@ namespace Chat_Program.Backend
 			OnCouldntSendResponse = onCouldntSendResponse ?? Exceptions.DefaultAction;
 
 			TcpClient = new TcpClient();
-			RsaImpl = new RsaImpl(Model.Settings.Rsa.KeySize);
+
+			AesImpl = new SymmetricEncryptionImpl();
+
+			//RsaImpl = new RsaImpl(Model.Settings.Rsa.KeySize);
 			//byte[] keyPair = File.ReadAllBytes(KeyPairPath);
 			//RsaImpl.SetKeyPair(keyPair);
 		}
@@ -47,6 +64,7 @@ namespace Chat_Program.Backend
 				try
 				{
 					TcpClient.Connect(ipAddress, port);
+					OnConnectionSuccessful();
 					return true;
 				}
 				catch (System.Net.Sockets.SocketException e)
@@ -73,6 +91,11 @@ namespace Chat_Program.Backend
 			return false;
 		}
 
+		private void OnConnectionSuccessful()
+		{
+			StartListeningForMessages();
+		}
+
 		public void Disconnect()
 		{
 			if (IsConnected)
@@ -87,11 +110,11 @@ namespace Chat_Program.Backend
 		public bool TrySendString(string str)
 		{
 			Message message = new Message(str);
-			byte[] buffer = SerialiseMessage(message);
+			byte[] buffer = SerialiseMessage(message, ServerRequest.RedistributeMessage);
 
 			if (buffer.Length > 0)
 			{
-				return TrySendResponse(buffer);
+				return TrySendResponse(ServerRequest.RedistributeMessage, buffer);
 			}
 
 			return false;
@@ -101,7 +124,7 @@ namespace Chat_Program.Backend
 		/// Sends a response to the server.
 		/// </summary>
 		/// <param name="buffer">Byte array response to send</param>
-		public bool TrySendResponse(byte[] buffer)
+		public bool TrySendResponse(ServerRequest request, byte[] buffer)
 		{
 			if (buffer == null)
 			{
@@ -156,7 +179,7 @@ namespace Chat_Program.Backend
 			return byteCount;
 		}
 
-		public void StartListeningForMessages()
+		private void StartListeningForMessages()
 		{
 			if (IsListening)
 			{
@@ -170,8 +193,8 @@ namespace Chat_Program.Backend
 				{
 					if (ReadAndDecryptResponse(out byte[] buffer) > 0)
 					{
-						IMessage message = DeserialiseMessage(buffer);
-						OnReceiveMessage.Invoke(message);
+						ServerContext context = (ServerContext)buffer[0];
+						ParseServerResponse(buffer, context);
 					}
 
 					Thread.Sleep(Model.Settings.Network.ReadMessageRetryDelayMs);
@@ -180,26 +203,22 @@ namespace Chat_Program.Backend
 			MessageListeningThread.IsBackground = true;
 			MessageListeningThread.Start();
 		}
-
-		public void StopListeningForMessages()
-		{
-			IsListening = false;
-		}
 		#endregion
 
 		#region Serialising / Deserialising Messages
-		private byte[] SerialiseMessage(IMessage message)
+		private byte[] SerialiseMessage(IMessage message, ServerRequest request)
 		{
-			if (sizeof(byte) + sizeof(int) + sizeof(char) * message.Content.Length > MaxResponseBytes)
+			if (sizeof(ServerRequest) + sizeof(ResponseType) + sizeof(int) + message.Content.Length > MaxResponseBytes)
 			{
 				// Message exceeds max response bytes
-				return new byte[0];
+				return Array.Empty<byte>();
 			}
 
 			using (MemoryStream memoryStream = new MemoryStream())
 			{
 				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
 				{
+					bWriter.Write((byte)request);
 					bWriter.Write((byte)message.ResponseType);
 					bWriter.Write(message.Content.Length);
 					bWriter.Write(message.Content);
@@ -217,6 +236,7 @@ namespace Chat_Program.Backend
 				{
 					try
 					{
+						ServerContext serverContext = (ServerContext)bReader.ReadByte();
 						ResponseType responseType = (ResponseType)bReader.ReadByte();
 						int contentSize = bReader.ReadInt32();
 						byte[] content = bReader.ReadBytes(contentSize);
@@ -228,6 +248,21 @@ namespace Chat_Program.Backend
 						return new Message("Message too large.");
 					}
 				}
+			}
+		}
+
+		private void ParseServerResponse(byte[] buffer, ServerContext context)
+		{
+			switch (context)
+			{
+				case ServerContext.Message:
+					IMessage message = DeserialiseMessage(buffer);
+					OnReceiveMessage.Invoke(message);
+					break;
+				case ServerContext.KeyRequest:
+					break;
+				default:
+					break;
 			}
 		}
 		#endregion

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Chat_Program.Security
+namespace Chat_Program.Backend.Security
 {
 	class EncryptedText
 	{

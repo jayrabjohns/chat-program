@@ -41,7 +41,6 @@ namespace Chat_Program.Frontend.Pages
 			Action<ChatClient> onConnectionSuccess = (ChatClient chatClient) =>
 			{
 				Model.Globals.Conversations.Add(new Model.Conversation(chatClient));
-				chatClient.StartListeningForMessages();
 			};
 
 #if DEBUG
@@ -57,7 +56,7 @@ namespace Chat_Program.Frontend.Pages
 					ChatClient,
 					Model.Settings.Network.MaxConnectionAttempts,
 					Model.Settings.Network.ConnectionRetryDelayMs,
-					null,
+					onConnectionFailed: null,
 					onConnectionSuccess
 					);
 

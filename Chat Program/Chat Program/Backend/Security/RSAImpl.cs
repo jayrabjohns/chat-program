@@ -2,7 +2,7 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Chat_Program.Backend
+namespace Chat_Program.Backend.Security
 {
 	class RsaImpl : IDisposable
 	{
