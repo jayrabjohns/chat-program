@@ -5,3 +5,12 @@ https://jameshfisher.com/2017/10/25/end-to-end-encryption-with-server-side-fanou
 Technically groupchat info (address, etc) isn't private, but the frontend just wont give you an option to join arbitrary groups, unless they're public.
 Instead you can create and invite.
 Instead you can create and invite.
+
+
+
+TODO:
+- Refactor to use SSlStream 
+- Create ServerRequest system
+- Get Clients to use AES instead of RSA
+- Setup first time connection flow for key exchange
+- Change to using JSON for serialisation

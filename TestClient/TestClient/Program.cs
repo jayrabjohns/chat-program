@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Chat_Program.Backend.Security;
+using System;
+using System.Text;
 
 namespace Chat_Program.Backend
 {
@@ -6,7 +8,14 @@ namespace Chat_Program.Backend
 	{
 		static void Main(string[] args)
 		{
-			ChatClient client = new ChatClient();
+			AesImpl aes = new AesImpl(Encoding.UTF8.GetBytes("Jay"));
+
+			var Out = aes.Encrypt(Encoding.UTF8.GetBytes("test"));
+			Console.WriteLine(Convert.ToBase64String(Out));
+			Console.WriteLine(Encoding.UTF8.GetString(Out));
+
+			var Out2 = aes.Decrypt(Out);
+			Console.WriteLine(Encoding.UTF8.GetString(Out2));
 		}
 	}
 }

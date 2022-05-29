@@ -7,10 +7,28 @@ using System.Threading.Tasks;
 
 namespace Chat_Program.Backend.Security
 {
-	struct EncryptedMessage
+	class EncryptedBuffer
 	{
-		byte[] CipherText;
-		byte[] IV;
+		public byte[] CipherBytes { get; set; }
+		public byte[] IV { get; set; }
+		public int TotalBytesLength { get => CipherBytes.Length + IV.Length; }
+
+		public EncryptedBuffer()
+		{ }
+
+		public EncryptedBuffer(byte[] asByteArray)
+		{
+			IV = asByteArray[0..Model.Settings.Aes.BlockSizeBytes];
+			CipherBytes = asByteArray[IV.Length..];
+		}
+
+		public void ToByteArray(byte[] buffer, int offset, int length)
+		{
+			for (int i = 0; i < length - offset; i++)
+			{
+				buffer[i + offset] = (i < IV.Length ? IV[i] : CipherBytes[i - IV.Length]);
+			}
+		}
 	}
 
 	struct AesSetup
@@ -23,12 +41,22 @@ namespace Chat_Program.Backend.Security
 
 	class AesImpl : IDisposable
 	{
-		private byte[] Key { get; }
-		private byte[] IV { get; }
+		private byte[] Key { get; set; }
+		private byte[] IV { get; set; }
 		private Aes Aes { get; }
 		private RNGCryptoServiceProvider RNG { get; } = new RNGCryptoServiceProvider();
 
-		public AesImpl(byte[] password)
+		public AesImpl()
+		{
+			Key = new byte[Model.Settings.Aes.KeySizeBytes];
+			RNG.GetBytes(Key);
+
+			IV = new byte[Model.Settings.Aes.BlockSizeBytes];
+			Aes = Aes.Create();
+			Aes.Mode = Model.Settings.Aes.CipherMode;
+		}
+
+		public AesImpl(string password)
 		{
 			byte[] salt = new byte[Model.Settings.Aes.KeySaltSizeBytes];
 			RNG.GetBytes(salt);
@@ -42,40 +70,31 @@ namespace Chat_Program.Backend.Security
 			Aes.Mode = Model.Settings.Aes.CipherMode;
 		}
 
-		public AesImpl(AesSetup setup)
+		public void UseSetup(AesSetup setup)
 		{
 			Model.Settings.Aes = setup.Settings;
 			Key = setup.Key;
 
 			IV = new byte[Model.Settings.Aes.BlockSizeBytes];
-			Aes = Aes.Create();
 			Aes.Mode = Model.Settings.Aes.CipherMode;
 		}
 
-		public byte[] Encrypt(byte[] plainBytes)
+		public EncryptedBuffer Encrypt(byte[] plainBytes)
 		{
 			RNG.GetBytes(IV);
+			EncryptedBuffer encryptedBuffer = new EncryptedBuffer() { IV = IV };
 
-			byte[] cipherBytes;
 			using (ICryptoTransform encryptor = Aes.CreateEncryptor(Key, IV))
 			{
-				 cipherBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
+				encryptedBuffer.CipherBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
 			}
 
-			byte[] result = new byte[IV.Length + cipherBytes.Length];
-			for (int i = 0; i < result.Length; i++)
-			{
-				result[i] = (i < IV.Length ? IV[i] : cipherBytes[i - IV.Length]);
-			}
-
-			return result;
+			return encryptedBuffer;
 		}
 
-		public byte[] Decrypt(byte[] combinedCipherBytes)
+		public byte[] Decrypt(EncryptedBuffer encryptedBuffer)
 		{
-			byte[] IV = combinedCipherBytes[0..Model.Settings.Aes.BlockSizeBytes];
-			byte[] cipherBytes = combinedCipherBytes[Model.Settings.Aes.BlockSizeBytes..];
-			return Decrypt(cipherBytes, IV);
+			return Decrypt(encryptedBuffer.CipherBytes, encryptedBuffer.IV);
 		}
 
 		public byte[] Decrypt(byte[] cipherBytes, byte[] IV)

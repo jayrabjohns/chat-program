@@ -9,7 +9,8 @@ namespace Chat_Server.Data
 	{
 		public int NewConnectionsDelayMs { get; } = 200;
 		public int HeartBeatFrequencyMs { get; } = 5000; // TODO: Change this to vary based on chatroom usage
-		public int DefaultReceiveBufferSize { get; } = 1024;
+		public int DefaultReceiveBufferSize { get; } = 2048;
+		public int DefaultMaxSendBufferSize { get; } = 2048;
 	}
 
 	class Settings

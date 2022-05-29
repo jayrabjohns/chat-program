@@ -106,7 +106,7 @@ namespace Chat_Program.Frontend.Pages
 				case Model.ResponseType.Image:
 				case Model.ResponseType.Audio:
 				default:
-					return;
+					throw new NotImplementedException();
 			}
 
 			Model.Globals.CurrentConversation.ConversationMessages.Add(conversationMessage);

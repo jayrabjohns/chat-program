@@ -30,7 +30,7 @@ namespace Chat_Program.Backend
 
 		private Thread MessageListeningThread { get; set; }
 		private RsaImpl RsaImpl { get; }
-		private SymmetricEncryptionImpl AesImpl { get; }
+		private AesImpl AesImpl { get; }
 		private string KeyPairPath { get => @"..\Model\Keys\keyPair"; }
 		private int MaxResponseBytes { get; }
 
@@ -49,7 +49,7 @@ namespace Chat_Program.Backend
 
 			TcpClient = new TcpClient();
 
-			AesImpl = new SymmetricEncryptionImpl();
+			AesImpl = new AesImpl();
 
 			//RsaImpl = new RsaImpl(Model.Settings.Rsa.KeySize);
 			//byte[] keyPair = File.ReadAllBytes(KeyPairPath);
@@ -107,14 +107,38 @@ namespace Chat_Program.Backend
 		#endregion
 
 		#region Sending / Receiving Data
+		private void StartListeningForMessages()
+		{
+			if (IsListening)
+			{
+				return;
+			}
+
+			IsListening = true;
+			MessageListeningThread = new Thread(() =>
+			{
+				while (IsListening)
+				{
+					if (ReadAndDecryptResponse(out byte[] buffer, out ServerContext context) > 0)
+					{
+						ParseServerResponse(buffer, context);
+					}
+
+					Thread.Sleep(Model.Settings.Network.ReadMessageRetryDelayMs);
+				}
+			});
+			MessageListeningThread.IsBackground = true;
+			MessageListeningThread.Start();
+		}
+
 		public bool TrySendString(string str)
 		{
 			Message message = new Message(str);
-			byte[] buffer = SerialiseMessage(message, ServerRequest.RedistributeMessage);
+			byte[] buffer = SerialiseMessage(message);
 
 			if (buffer.Length > 0)
 			{
-				return TrySendResponse(ServerRequest.RedistributeMessage, buffer);
+				return TrySendEncryptedResponse(ServerRequest.RedistributeMessage, buffer);
 			}
 
 			return false;
@@ -124,7 +148,7 @@ namespace Chat_Program.Backend
 		/// Sends a response to the server.
 		/// </summary>
 		/// <param name="buffer">Byte array response to send</param>
-		public bool TrySendResponse(ServerRequest request, byte[] buffer)
+		public bool TrySendEncryptedResponse(ServerRequest request, byte[] buffer)
 		{
 			if (buffer == null)
 			{
@@ -138,7 +162,11 @@ namespace Chat_Program.Backend
 
 			if (IsConnected)
 			{
-				byte[] encryptedBuf = RsaImpl.EncryptRsa(buffer);
+				var encrypted = AesImpl.Encrypt(buffer);
+				byte[] encryptedBuf = new byte[sizeof(ServerRequest) + encrypted.TotalBytesLength];
+				encryptedBuf[0] = (byte)request;
+				encrypted.ToByteArray(encryptedBuf, 1, encryptedBuf.Length);
+				
 				try
 				{
 					TcpClient.GetStream().Write(encryptedBuf, 0, encryptedBuf.Length);
@@ -157,7 +185,7 @@ namespace Chat_Program.Backend
 			return false;
 		}
 
-		public int ReadAndDecryptResponse(out byte[] response)
+		public int ReadAndDecryptResponse(out byte[] response, out ServerContext context)
 		{
 			response = new byte[MaxResponseBytes];
 			int byteCount = 0;
@@ -174,41 +202,17 @@ namespace Chat_Program.Backend
 			}
 
 			Array.Resize(ref response, byteCount);
-			response = RsaImpl.DecryptRsa(response);
+			context = (ServerContext)response[0];
+			response = AesImpl.Decrypt(new EncryptedBuffer(response[1..]));//RsaImpl.DecryptRsa(response);
 
 			return byteCount;
-		}
-
-		private void StartListeningForMessages()
-		{
-			if (IsListening)
-			{
-				return;
-			}
-
-			IsListening = true;
-			MessageListeningThread = new Thread(() =>
-			{
-				while (IsListening)
-				{
-					if (ReadAndDecryptResponse(out byte[] buffer) > 0)
-					{
-						ServerContext context = (ServerContext)buffer[0];
-						ParseServerResponse(buffer, context);
-					}
-
-					Thread.Sleep(Model.Settings.Network.ReadMessageRetryDelayMs);
-				}
-			});
-			MessageListeningThread.IsBackground = true;
-			MessageListeningThread.Start();
 		}
 		#endregion
 
 		#region Serialising / Deserialising Messages
-		private byte[] SerialiseMessage(IMessage message, ServerRequest request)
+		private byte[] SerialiseMessage(IMessage message)
 		{
-			if (sizeof(ServerRequest) + sizeof(ResponseType) + sizeof(int) + message.Content.Length > MaxResponseBytes)
+			if (sizeof(ResponseType) + sizeof(int) + message.Content.Length > MaxResponseBytes)
 			{
 				// Message exceeds max response bytes
 				return Array.Empty<byte>();
@@ -218,7 +222,6 @@ namespace Chat_Program.Backend
 			{
 				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
 				{
-					bWriter.Write((byte)request);
 					bWriter.Write((byte)message.ResponseType);
 					bWriter.Write(message.Content.Length);
 					bWriter.Write(message.Content);
@@ -236,7 +239,6 @@ namespace Chat_Program.Backend
 				{
 					try
 					{
-						ServerContext serverContext = (ServerContext)bReader.ReadByte();
 						ResponseType responseType = (ResponseType)bReader.ReadByte();
 						int contentSize = bReader.ReadInt32();
 						byte[] content = bReader.ReadBytes(contentSize);

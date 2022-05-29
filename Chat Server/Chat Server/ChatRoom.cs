@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -15,6 +16,17 @@ namespace Chat_Server
 		Running = 2,
 		Stopping = 3,
 		Stopped = 4,
+	}
+
+	public enum ServerRequest : byte
+	{
+		RedistributeMessage = 0,
+	}
+
+	public enum ServerContext : byte
+	{
+		Message = 0,
+		KeyRequest = 1,
 	}
 
 	/// <summary>
@@ -174,7 +186,7 @@ namespace Chat_Server
 		{
 			Client client;
 			string displayName = $"Client#{TotalClientsConnected++}";
-			client = new Client(tcpClient, displayName);
+			client = new Client(tcpClient, displayName, new System.Security.Cryptography.RSAParameters()); // TODO fix
 
 			return client;
 		}
@@ -191,8 +203,11 @@ namespace Chat_Server
 				try
 				{
 					int numBytes = stream.Read(receiveBuffer, 0, receiveBuffer.Length);
-					SendResponseToAllClients(receiveBuffer, numBytes, client, true);
-					Array.Clear(receiveBuffer, 0, numBytes);
+					if (numBytes > 0)
+					{
+						OnMessageReceived(receiveBuffer, numBytes, client);
+						Array.Clear(receiveBuffer, 0, numBytes);
+					}
 				}
 				catch (IOException)
 				{
@@ -203,17 +218,37 @@ namespace Chat_Server
 			}
 		}
 
+		private void OnMessageReceived(byte[] buffer, int numBytes, Client sender)
+		{
+			ServerRequest request = (ServerRequest)buffer[0];
+			const int sizeofRequest = 1;
+
+			switch (request)
+			{
+
+				//case ServerRequest.GetChatroomMembers:
+				//	byte[] clientsPublicInfo = SerialisePublicClientInfo((byte)ServerContext.ClientInfos);
+				//	SendResponse(sender, clientsPublicInfo, 0, clientsPublicInfo.Length);
+				//	break;
+				case ServerRequest.RedistributeMessage:
+				default:
+					buffer[0] = (byte)ServerContext.Message;
+					SendResponseToAllClients(buffer, 0, numBytes, sender, includeSender: true);
+					break;
+			}
+		}
+
 		private void SendString(Client client, string str)
 		{
 			byte[] response = Encoding.UTF8.GetBytes(str);
-			SendResponse(client, response, response.Length);
+			SendResponse(client, response, 0, response.Length);
 		}
 
-		private void SendResponse(Client client, byte[] response, int size)
+		private void SendResponse(Client client, byte[] response, int offset, int size)
 		{
 			try
 			{
-				client.TcpClient.GetStream().Write(response, 0, size);
+				client.TcpClient.GetStream().Write(response, offset, size);
 			}
             catch (System.InvalidOperationException)
 			{
@@ -222,7 +257,7 @@ namespace Chat_Server
 			}
 		}
 
-		private void SendResponseToAllClients(byte[] response, int size, Client sender = null, bool includeSender = false)
+		private void SendResponseToAllClients(byte[] response, int offset, int size, Client sender = null, bool includeSender = false)
 		{
 			if (sender == null)
 			{
@@ -232,13 +267,48 @@ namespace Chat_Server
 			lock (Clients)
 			{
 				for (int i = Clients.Count - 1; i >= 0; i--)
-				{ 
+				{
 					if (includeSender || Clients[i] != sender)
 					{
-						SendResponse(Clients[i], response, size);
+						SendResponse(Clients[i], response, offset, size);
 					}
 				}
 			}
+		}
+
+		private byte[] SerialisePublicClientInfo(byte header)
+		{
+			byte[] jsonBytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(GetPublicClientInfo()));
+
+			if (1 + sizeof(int) + jsonBytes.Length > Data.Settings.ChatRoom.DefaultMaxSendBufferSize)
+			{
+				return Array.Empty<byte>();
+			}
+
+			using (MemoryStream memoryStream = new MemoryStream())
+			{
+				using (BinaryWriter bWriter = new BinaryWriter(memoryStream))
+				{
+					bWriter.Write(header);
+					bWriter.Write(jsonBytes.Length);
+					bWriter.Write(jsonBytes);
+				}
+
+				return memoryStream.ToArray();
+			}
+		}
+
+		private PublicClientInfo[] GetPublicClientInfo()
+		{
+			// TODO: could cache and check for differences
+
+			PublicClientInfo[] publicClientInfos = new PublicClientInfo[Clients.Count];
+			for (int i = 0; i < Clients.Count; i++)
+			{
+				publicClientInfos[i] = Clients[i].Info;
+			}
+
+			return publicClientInfos;
 		}
 	}
 }

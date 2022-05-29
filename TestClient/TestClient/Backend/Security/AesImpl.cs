@@ -1,101 +1,87 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Chat_Program.Security
+namespace Chat_Program.Backend.Security
 {
-	class AesImpl
+	struct EncryptedMessage
 	{
-		// Based on https://stackoverflow.com/questions/273452/using-aes-encryption-in-c-sharp
+		byte[] CipherText;
+		byte[] IV;
+	}
 
-		private static RNGCryptoServiceProvider RNG { get; } = new RNGCryptoServiceProvider();
+	// https://tomrucki.com/posts/aes-encryption-in-csharp/
 
-		public static EncryptedText Encrypt(byte[] textBytes, byte[] password, byte[] saltBytes)
+	class AesImpl : IDisposable
+	{
+		private byte[] Key { get; }
+		private byte[] IV { get; }
+		private Aes Aes { get; }
+		private RNGCryptoServiceProvider RNG { get; } = new RNGCryptoServiceProvider();
+
+		public AesImpl(byte[] password)
 		{
-			return Encrypt<AesManaged>(textBytes, password, saltBytes);
+			byte[] salt = new byte[Model.Settings.Aes.KeySaltSizeBytes];
+			RNG.GetBytes(salt);
+
+			// Using PBKDF2 to derive key from password
+			Rfc2898DeriveBytes keyBytes = new Rfc2898DeriveBytes(password, salt, Model.Settings.Aes.KeyIterations, Model.Settings.Aes.KeyPRF);
+			Key = keyBytes.GetBytes(Model.Settings.Aes.KeySizeBytes);
+
+			IV = new byte[Model.Settings.Aes.BlockSizeBytes];
+
+			Aes = Aes.Create();
+			Aes.Mode = Model.Settings.Aes.CipherMode;
 		}
 
-		public static EncryptedText Encrypt<T>(byte[] textBytes, byte[] password, byte[] saltBytes) where T : SymmetricAlgorithm, new()
+		public byte[] Encrypt(byte[] plainBytes)
 		{
-			var encryptedText = new EncryptedText();
-			using (T cipher = new T())
+			RNG.GetBytes(IV);
+
+			byte[] cipherBytes;
+			using (ICryptoTransform encryptor = Aes.CreateEncryptor(Key, IV))
 			{
-				byte[] vectorBytes = new byte[cipher.BlockSize / 16];
-				RNG.GetBytes(vectorBytes);
-
-				// Using PBKDF2 to derive key from password
-				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Security.Iterations, Model.Settings.Security.HashAlgorithm);
-				byte[] keyBytes = passwordBytes.GetBytes(Model.Settings.Security.KeySize / 8);
-
-				cipher.Mode = Model.Settings.Security.CipherMode;
-
-				using (ICryptoTransform encryptor = cipher.CreateEncryptor(keyBytes, vectorBytes))
-				{
-					using (MemoryStream ms = new MemoryStream())
-					{
-						using (CryptoStream writer = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
-						{
-							writer.Write(textBytes, 0, textBytes.Length);
-							writer.FlushFinalBlock();
-							encryptedText.CipherTextBytes = ms.ToArray();
-						}
-					}
-				}
-
-				encryptedText.VectorBytes = vectorBytes;
-				encryptedText.SaltBytes = saltBytes;
-
-				cipher.Clear();
+				 cipherBytes = encryptor.TransformFinalBlock(plainBytes, 0, plainBytes.Length);
 			}
 
-			return encryptedText;
-		}
-
-		public static Tuple<byte[], int> Decrypt(byte[] textBytes, byte[] password, byte[] saltBytes, byte[] vectorBytes)
-		{
-			return Decrypt<AesManaged>(textBytes, password, saltBytes, vectorBytes);
-		}
-
-		public static Tuple<byte[], int> Decrypt<T>(byte[] textBytes, byte[] password, byte[] saltBytes, byte[] vectorBytes) where T : SymmetricAlgorithm, new()
-		{
-			byte[] decrypted;
-			int decryptedByteCount = 0;
-
-			using (T cipher = new T())
+			byte[] result = new byte[IV.Length + cipherBytes.Length];
+			for (int i = 0; i < IV.Length; i++)
 			{
-				Rfc2898DeriveBytes passwordBytes = new Rfc2898DeriveBytes(password, saltBytes, Model.Settings.Security.Iterations, Model.Settings.Security.HashAlgorithm);
-				byte[] keyBytes = passwordBytes.GetBytes(Model.Settings.Security.KeySize / 8);
-
-				cipher.Mode = Model.Settings.Security.CipherMode;
-
-				//try
-				//{
-					using (ICryptoTransform decryptor = cipher.CreateDecryptor(keyBytes, vectorBytes))
-					{
-						using (MemoryStream ms = new MemoryStream(textBytes))
-						{
-							using (CryptoStream reader = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-							{
-								decrypted = new byte[textBytes.Length];
-								decryptedByteCount = reader.Read(decrypted, 0, decrypted.Length);
-							}
-						}
-					}
-				//}
-				//catch (Exception ex)
-				//{
-				//	return string.Empty;
-				//}
-				cipher.Clear();
+				result[i] = IV[i];
+			}
+			for (int i = IV.Length; i < result.Length; i++)
+			{
+				result[i] = cipherBytes[i - IV.Length];
 			}
 
-			return new Tuple<byte[], int>(decrypted, decryptedByteCount);
+			return result;
 		}
 
-		public string ByteArrayToStringUTF8(byte[] bytes, int bytesRead)
+		public byte[] Decrypt(byte[] combinedCipherBytes)
 		{
-			return Encoding.UTF8.GetString(bytes, 0, bytesRead);
+			byte[] IV = combinedCipherBytes[0..Model.Settings.Aes.BlockSizeBytes];
+			byte[] cipherBytes = combinedCipherBytes[Model.Settings.Aes.BlockSizeBytes..];
+			return Decrypt(cipherBytes, IV);
+		}
+
+		public byte[] Decrypt(byte[] cipherBytes, byte[] IV)
+		{
+			byte[] plainBytes;
+			using (ICryptoTransform decryptor = Aes.CreateDecryptor(Key, IV))
+			{
+				plainBytes = decryptor.TransformFinalBlock(cipherBytes, 0, cipherBytes.Length);
+			}
+
+			return plainBytes;
+		}
+
+		public void Dispose()
+		{
+			Aes.Dispose();
+			RNG.Dispose();
 		}
 	}
 }
